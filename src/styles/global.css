@@ -1,0 +1,17 @@
+/* Global Styles & Pomify Theme Tokens */
+:root {
+  --color-pomify-purple: #A78BFA;
+  --color-pomify-blue: #93C5FD;
+  --color-pomify-pink: #FBCFE8;
+  --color-pomify-mint: #A7F3D0;
+  --color-pomify-bg: #F9F9FB;
+  --color-pomify-navy: #1E1B4B;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--color-pomify-bg);
+  color: var(--color-pomify-navy);
+}
