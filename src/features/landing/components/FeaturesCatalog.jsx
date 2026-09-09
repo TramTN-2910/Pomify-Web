@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Zap, MessageCircle, Heart, Shield, Clock, Music, Cpu, Compass, Layers } from 'lucide-react';
+import { Sparkles, Zap, MessageCircle, Heart, Clock, Music, Cpu, Compass, Layers } from 'lucide-react';
 import GlassCard from '../../../components/ui/GlassCard';
 import Badge from '../../../components/ui/Badge';
 import useRobotStore from '../../robot-companion/store/robotStore';
@@ -33,7 +33,7 @@ export const FeaturesCatalog = () => {
       id: 1,
       category: 'productivity',
       title: 'Smart Pomodoro Timer',
-      description: 'Đếm giờ Pomodoro thông minh kết hợp nghỉ ngắn nghỉ dài với hiệu ứng ánh sáng dịu.',
+      description: 'Smart Pomodoro focus timer with automated short/long break ambient light cycles.',
       icon: Clock,
       badge: 'Productivity',
     },
@@ -41,7 +41,7 @@ export const FeaturesCatalog = () => {
       id: 2,
       category: 'productivity',
       title: 'Task Sorting & Priority',
-      description: 'Phân loại công việc To-do tự động theo mức độ cấp thiết và thời gian tối ưu.',
+      description: 'Automated task prioritization based on urgency and optimal energy hours.',
       icon: Zap,
       badge: 'Productivity',
     },
@@ -49,7 +49,7 @@ export const FeaturesCatalog = () => {
       id: 3,
       category: 'ai',
       title: 'Proactive Mood Sensor',
-      description: 'Nhận diện nhịp làm việc và gợi ý thay đổi không gian âm thanh khi có dấu hiệu căng thẳng.',
+      description: 'Detects work rhythm and suggests soundscape changes when stress is detected.',
       icon: Cpu,
       badge: 'AI Engine',
     },
@@ -57,7 +57,7 @@ export const FeaturesCatalog = () => {
       id: 4,
       category: 'ai',
       title: 'Voice Wave Synthesis',
-      description: 'Tổng hợp giọng nói mượt mà, phản hồi câu hỏi thông tin chỉ trong milliseconds.',
+      description: 'Smooth voice synthesis delivering instant responses to your questions.',
       icon: Sparkles,
       badge: 'AI Engine',
     },
@@ -65,7 +65,7 @@ export const FeaturesCatalog = () => {
       id: 5,
       category: 'communication',
       title: 'Dual-mode AI Chat',
-      description: 'Trò chuyện nhanh qua ô chat floating widget hoặc tương tác giọng nói trực tiếp.',
+      description: 'Converse via floating AI chat widget or hands-free direct voice interaction.',
       icon: MessageCircle,
       badge: 'Chat & Voice',
     },
@@ -73,7 +73,7 @@ export const FeaturesCatalog = () => {
       id: 6,
       category: 'communication',
       title: 'Speech Recognition',
-      description: 'Nhận diện giọng nói chuẩn xác với khả năng lọc tiếng ồn xung quanh.',
+      description: 'Accurate voice recognition equipped with ambient noise filtering.',
       icon: Compass,
       badge: 'Chat & Voice',
     },
@@ -81,7 +81,7 @@ export const FeaturesCatalog = () => {
       id: 7,
       category: 'companionship',
       title: 'Warm Idle Companion',
-      description: 'Luôn bên cạnh bạn trên bàn làm việc với biểu cảm mắt LED đáng yêu và cử động nhẹ.',
+      description: 'Sits on your desk with cute LED facial expressions and gentle micro-animations.',
       icon: Heart,
       badge: 'Companion',
     },
@@ -89,7 +89,7 @@ export const FeaturesCatalog = () => {
       id: 8,
       category: 'companionship',
       title: 'Lofi Relax Soundscapes',
-      description: 'Phát các giai điệu Lofi & thiên nhiên thư giãn để giúp bạn tái tạo năng lượng.',
+      description: 'Plays relaxing Lofi melodies and nature ambient soundscapes to recharge your focus.',
       icon: Music,
       badge: 'Companion',
     },
@@ -112,7 +112,7 @@ export const FeaturesCatalog = () => {
             Comprehensive Suite of <span className="text-pomify-purple">Features</span>
           </h2>
           <p className="text-base sm:text-lg text-pomify-subtext leading-relaxed">
-            Khám phá đầy đủ các tính năng thông minh giúp nâng tầm hiệu suất và trải nghiệm sống của bạn.
+            Discover the complete suite of smart features designed to elevate your daily focus and wellness.
           </p>
         </div>
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Sparkles, Heart, Award, ShieldCheck, Target } from 'lucide-react';
+import { Users, Award, Target } from 'lucide-react';
 import GlassCard from '../../../components/ui/GlassCard';
 import Badge from '../../../components/ui/Badge';
 import useRobotStore from '../../robot-companion/store/robotStore';
@@ -16,7 +16,7 @@ export const TeamGrid = () => {
       role: 'Chief Executive Officer (CEO)',
       avatar: '👑',
       bgColor: 'bg-purple-100 text-purple-700',
-      description: 'Định hướng tầm nhìn chiến lược, phát triển thương hiệu và tạo dựng hệ sinh thái Cute Tech.',
+      description: 'Directing strategic vision, brand identity, and cultivating the Cute Tech ecosystem.',
       bubble: 'Greetings from CEO Kim Ngọc! 👑',
     },
     {
@@ -25,7 +25,7 @@ export const TeamGrid = () => {
       role: 'Chief Marketing Officer (CMO)',
       avatar: '🌟',
       bgColor: 'bg-pink-100 text-pink-700',
-      description: 'Lãnh đạo chiến lược marketing, định vị thương hiệu và xây dựng cộng đồng Pomify.',
+      description: 'Leading marketing strategy, brand positioning, and building the global Pomify community.',
       bubble: 'Mai Anh: Spreading the Cute Vibe! 🌟',
     },
     {
@@ -34,7 +34,7 @@ export const TeamGrid = () => {
       role: 'Chief Financial Officer (CFO)',
       avatar: '💼',
       bgColor: 'bg-blue-100 text-blue-700',
-      description: 'Quản lý tài chính, chiến lược nguồn lực và kế hoạch kinh doanh phát triển bền vững.',
+      description: 'Managing corporate finance, resource allocation, and sustainable business expansion.',
       bubble: 'Gia Bảo: Fueling Pomify growth! 💼',
     },
     {
@@ -43,7 +43,7 @@ export const TeamGrid = () => {
       role: 'Chief Technology Officer (CTO)',
       avatar: '💻',
       bgColor: 'bg-emerald-100 text-emerald-700',
-      description: 'Lãnh đạo kỹ thuật 3D Studio, kiến trúc hệ thống và trải nghiệm E-commerce.',
+      description: 'Heading 3D Studio engineering, system architecture, and E-commerce user experience.',
       bubble: 'Ngọc Trâm: Crafting 3D Studio Tech! 💻',
     },
     {
@@ -52,7 +52,7 @@ export const TeamGrid = () => {
       role: 'Chief Product Officer (CPO)',
       avatar: '🚀',
       bgColor: 'bg-amber-100 text-amber-700',
-      description: 'Quản trị sản phẩm phần cứng Robot, trải nghiệm người dùng và tính năng AI cốt lõi.',
+      description: 'Overseeing physical robot hardware engineering, UX research, and core AI features.',
       bubble: 'Quốc Việt: Engineering AI Companion! 🚀',
     },
   ];
@@ -70,7 +70,7 @@ export const TeamGrid = () => {
             The Team Behind <span className="text-pomify-purple">Pomify</span>
           </h2>
           <p className="text-base sm:text-lg text-pomify-subtext leading-relaxed">
-            Chúng tôi xây dựng Pomify từ ước mơ mang công nghệ thông minh kết hợp với phong cách đáng yêu, mang đến niềm vui mỗi ngày cho bạn.
+            We built Pomify to merge smart AI technology with an adorable vibe, bringing joy and productivity to your everyday life.
           </p>
         </div>
 
@@ -82,12 +82,12 @@ export const TeamGrid = () => {
                 <Target className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-pomify-navy">Sứ Mệnh (Mission)</h3>
+                <h3 className="text-xl font-bold text-pomify-navy">Mission</h3>
                 <p className="text-xs text-pomify-purple font-semibold">Cute Tech for Everyday Life</p>
               </div>
             </div>
             <p className="text-sm text-pomify-subtext leading-relaxed">
-              Biến những công cụ quản lý công việc khô khan thành người bạn robot đồng hành có cảm xúc, mang lại năng lượng tích cực và sự thư thái trọn vẹn.
+              Transforming rigid task tools into an emotionally responsive companion robot that delivers positive energy and peace of mind.
             </p>
           </GlassCard>
 
@@ -97,12 +97,12 @@ export const TeamGrid = () => {
                 <Award className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-pomify-navy">Tầm Nhìn (Vision)</h3>
+                <h3 className="text-xl font-bold text-pomify-navy">Vision</h3>
                 <p className="text-xs text-blue-600 font-semibold">Global AI Companion Leader</p>
               </div>
             </div>
             <p className="text-sm text-pomify-subtext leading-relaxed">
-              Trở thành thương hiệu robot trợ lý cá nhân dẫn đầu phong cách Cute Vibe, hiện diện trên mọi bàn làm việc của người trẻ toàn cầu.
+              Becoming the world’s leading Cute Vibe personal assistant robot, present on every modern desk worldwide.
             </p>
           </GlassCard>
         </div>

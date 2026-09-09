@@ -3,7 +3,7 @@ import PageContainer from '../components/layout/PageContainer';
 import HardwareAnatomy from '../features/landing/components/HardwareAnatomy';
 import MouseTracker3D from '../features/robot-companion/components/MouseTracker3D';
 import Badge from '../components/ui/Badge';
-import { Bot, Sparkles, Cpu, ShieldCheck } from 'lucide-react';
+import { Bot } from 'lucide-react';
 
 export const RobotPage = () => {
   return (
@@ -21,7 +21,7 @@ export const RobotPage = () => {
               <span className="text-pomify-purple">Designed for Connection.</span>
             </h1>
             <p className="text-lg text-pomify-subtext leading-relaxed">
-              Khám phá chi tiết cấu trúc linh kiện 3D, mắt LED cảm xúc, bộ xử lý AI và cảm biến tiệm cận được tích hợp bên trong Robot Pomify.
+              Explore detailed 3D component breakdown, emotional LED facial display, AI chip, and proximity sensors inside Pomify.
             </p>
           </div>
 

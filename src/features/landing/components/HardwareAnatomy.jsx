@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Cpu, Eye, Mic, Wifi, Fingerprint, Sparkles, Activity } from 'lucide-react';
+import { Cpu, Eye, Mic, Wifi, Fingerprint, Activity } from 'lucide-react';
 import GlassCard from '../../../components/ui/GlassCard';
 import Badge from '../../../components/ui/Badge';
 import CanvasViewer from '../../../components/3d/CanvasViewer';
@@ -15,8 +15,8 @@ export const HardwareAnatomy = () => {
     {
       id: 'face',
       name: 'Cute LED Face Display',
-      subtitle: 'Khuôn mặt biểu cảm 2D/Vector',
-      description: 'Màn hình hiển thị LED với hàng chục trạng thái biểu cảm sống động (Smart Happy, Thinking, Caring, Sleepy).',
+      subtitle: '2D/Vector Facial Expressions',
+      description: 'Vivid OLED screen displaying bi-color facial expressions (Happy, Thinking, Caring, Sleepy).',
       icon: Eye,
       emotion: 'happy',
       bubble: 'Inspecting LED Face display 👁️',
@@ -25,8 +25,8 @@ export const HardwareAnatomy = () => {
     {
       id: 'voice',
       name: 'Dual Mic & Speaker Array',
-      subtitle: 'Thu âm đa hướng & Loa trầm',
-      description: 'Cụm micro chống ồn lọc âm thông minh và loa âm thanh nổi truyền tải giọng nói ấm áp.',
+      subtitle: 'Noise-Canceling Mic & Spatial Audio',
+      description: 'Dual directional noise-canceling microphone array paired with spatial audio speaker.',
       icon: Mic,
       emotion: 'alert',
       bubble: 'Testing Voice Speaker Array 🎙️',
@@ -35,8 +35,8 @@ export const HardwareAnatomy = () => {
     {
       id: 'brain',
       name: 'Pomify AI Chip & Neural Engine',
-      subtitle: 'Bộ não xử lý trí tuệ nhân tạo',
-      description: 'Chip xử lý AI cục bộ với khả năng phản hồi thời gian thực và tự học thói quen người dùng.',
+      subtitle: 'AI Neural Core Processor',
+      description: 'On-device neural chip providing real-time local AI processing and adaptive routine learning.',
       icon: Cpu,
       emotion: 'thinking',
       bubble: 'Neural Engine active 🧠',
@@ -45,8 +45,8 @@ export const HardwareAnatomy = () => {
     {
       id: 'touch',
       name: 'Touch & Proximity Sensors',
-      subtitle: 'Cảm biến va chạm & Tiệm cận',
-      description: 'Robot phản ứng nũng nịu hoặc mỉm cười khi bạn chạm nhẹ vào phần đỉnh đầu hoặc vỏ mặt.',
+      subtitle: 'Touch & Proximity Sensors',
+      description: 'Robot responds with cute reactions or smiles when you touch its head or shell.',
       icon: Fingerprint,
       emotion: 'caring',
       bubble: 'Touch sensor activated 🫶',
@@ -55,8 +55,8 @@ export const HardwareAnatomy = () => {
     {
       id: 'connectivity',
       name: 'Wi-Fi 6 & Cloud Sync',
-      subtitle: 'Kết nối đám mây an toàn',
-      description: 'Đồng bộ hóa dữ liệu lịch trình và nhắc nhở thời gian thực với mã hóa bảo mật toàn vẹn.',
+      subtitle: 'Secure Cloud & Local Sync',
+      description: 'Real-time schedule synchronization and encrypted cloud backup.',
       icon: Wifi,
       emotion: 'curious',
       bubble: 'Cloud Sync connected ☁️',
@@ -83,7 +83,7 @@ export const HardwareAnatomy = () => {
             Meet the Hardware Behind <span className="text-pomify-purple">Pomify</span>
           </h2>
           <p className="text-base sm:text-lg text-slate-300 leading-relaxed">
-            Khám phá kiến trúc phần cứng tinh xảo được gói gọn bên trong chú robot nhỏ đáng yêu.
+            Explore the intricate hardware architecture packed inside this adorable desk companion.
           </p>
         </div>
 

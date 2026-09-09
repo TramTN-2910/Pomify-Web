@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Brain, UserCheck, Heart, Sparkles, ShieldAlert, Award } from 'lucide-react';
+import { Brain, UserCheck, Heart, Sparkles } from 'lucide-react';
 import GlassCard from '../../../components/ui/GlassCard';
 import Badge from '../../../components/ui/Badge';
 import useRobotStore from '../../robot-companion/store/robotStore';
@@ -12,35 +12,35 @@ export const WhyPomifyTimeline = () => {
     {
       id: 'smart',
       tag: '01. SMART TECH',
-      title: 'Thông Minh Hơn Trợ Lý Thông Thường',
-      description: 'Pomify hiểu ngữ cảnh lịch trình của bạn. Tự động điều chỉnh các nhắc nhở công việc thông minh dựa trên thói quen làm việc hàng ngày.',
+      title: 'Smarter Than Standard Assistants',
+      description: 'Pomify understands your schedule context, automatically adjusting smart task reminders based on your daily work habits.',
       icon: Brain,
       color: 'from-purple-500 to-indigo-500',
       emotion: 'thinking',
       bubble: 'Smart AI routing your day... 🧠',
-      highlights: ['Dự đoán công việc', 'Tự động sắp xếp ưu tiên', 'Tối ưu hóa thời gian tập trung'],
+      highlights: ['Predictive Tasking', 'Auto Priority Sorting', 'Focus Time Optimization'],
     },
     {
       id: 'personal',
       tag: '02. PERSONALIZED VIBE',
-      title: 'Cá Nhân Hóa Đáng Yêu & Thích Nghi',
-      description: 'Không bao giờ đơn điệu. Pomify thay đổi biểu cảm, màu sắc và tone giọng để phù hợp với cá tính và tâm trạng của riêng bạn.',
+      title: 'Adorable Personalization & Adaptive Style',
+      description: 'Never monotonous. Pomify switches expressions, colors, and tone of voice to match your unique personality and mood.',
       icon: UserCheck,
       color: 'from-pink-500 to-rose-400',
       emotion: 'curious',
       bubble: 'Learning your favorite vibe! ✨',
-      highlights: ['Tùy chỉnh màu 3D Studio', 'Biểu cảm LED sinh động', 'Thích ứng gu cá nhân'],
+      highlights: ['3D Studio Material Customizer', 'Vivid LED Expressions', 'Personal Vibe Adaptation'],
     },
     {
       id: 'caring',
       tag: '03. CARING COMPANION',
-      title: 'Biết Khi Nào Cần Nhắc, Khi Nào Để Bạn Nghỉ Ngơi',
-      description: 'Thấu hiểu giá trị của sự thư thái. Pomify chủ động nhận biết dấu hiệu mệt mỏi để khuyên bạn rời mắt khỏi màn hình đúng lúc.',
+      title: 'Knows When to Remind & When to Let You Rest',
+      description: 'Understands the true value of tranquility. Pomify proactively detects fatigue signals to advise screen breaks right on time.',
       icon: Heart,
       color: 'from-emerald-400 to-teal-500',
       emotion: 'caring',
       bubble: 'Take a break! You did great today 🫶',
-      highlights: ['Cảnh báo kiệt sức (Burnout)', 'Nhắc uống nước & vươn vai', 'Bảo vệ sức khỏe lâu dài'],
+      highlights: ['Burnout Prevention', 'Hydration & Stretch Alerts', 'Long-term Wellness Protection'],
     },
   ];
 
@@ -57,7 +57,7 @@ export const WhyPomifyTimeline = () => {
             Smarter. Cutest. <span className="text-pomify-purple">Always by your side.</span>
           </h2>
           <p className="text-base sm:text-lg text-pomify-subtext leading-relaxed">
-            3 lý do tạo nên sự khác biệt hoàn toàn giữa Pomify và các công cụ trợ lý cứng nhắc.
+            3 core pillars that make Pomify truly stand out from rigid traditional productivity tools.
           </p>
         </div>
 

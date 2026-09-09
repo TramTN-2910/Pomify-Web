@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bell, Calendar, Lightbulb, Mic, Send, CheckCircle2, Sparkles, Volume2 } from 'lucide-react';
+import { Bell, Calendar, Lightbulb, Mic, CheckCircle2, Sparkles, Volume2 } from 'lucide-react';
 import GlassCard from '../../../components/ui/GlassCard';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
@@ -9,7 +9,6 @@ import useRobotStore from '../../robot-companion/store/robotStore';
 export const CapabilitiesGrid = () => {
   const { setEmotion, setBubbleText } = useRobotStore();
   const [activeTab, setActiveTab] = useState('reminder');
-  const [inputText, setInputText] = useState('');
   const [demoState, setDemoState] = useState('idle');
 
   // Trigger interactive feature action
@@ -57,7 +56,7 @@ export const CapabilitiesGrid = () => {
       icon: Bell,
       tag: 'Caring Alert',
       color: 'from-amber-400 to-orange-400',
-      description: 'Nhắc nhở thông minh dựa trên thói quen sinh hoạt và trạng thái sức khỏe.',
+      description: 'Smart reminders based on your daily routine and wellness status.',
     },
     {
       id: 'planning',
@@ -65,7 +64,7 @@ export const CapabilitiesGrid = () => {
       icon: Calendar,
       tag: 'Task Sorting',
       color: 'from-pomify-purple to-pomify-blue',
-      description: 'Tự động phân bổ danh sách To-do vào các khung giờ tập trung cao nhất.',
+      description: 'Automatically allocates your To-Do list to your peak focus hours.',
     },
     {
       id: 'suggestion',
@@ -73,7 +72,7 @@ export const CapabilitiesGrid = () => {
       icon: Lightbulb,
       tag: 'Proactive Advice',
       color: 'from-emerald-400 to-teal-500',
-      description: 'Gợi ý giải pháp thông minh, âm nhạc thư giãn và lịch trình nghỉ ngơi.',
+      description: 'Provides intelligent insights, relaxing soundscapes, and break schedules.',
     },
     {
       id: 'interaction',
@@ -81,7 +80,7 @@ export const CapabilitiesGrid = () => {
       icon: Mic,
       tag: 'Natural Voice',
       color: 'from-pink-400 to-rose-400',
-      description: 'Giao tiếp 2 chiều với nhận diện giọng nói mượt mà và cảm xúc tự nhiên.',
+      description: 'Two-way interaction with smooth voice recognition and natural emotional reactions.',
     },
   ];
 
@@ -98,7 +97,7 @@ export const CapabilitiesGrid = () => {
             What Can <span className="text-pomify-purple">Pomify</span> Do?
           </h2>
           <p className="text-base sm:text-lg text-pomify-subtext leading-relaxed">
-            Khám phá 4 trụ cột tính năng tương tác trực tiếp. Nhấp vào các trụ cột để chạy thử trải nghiệm thực tế cùng Robot Pomify.
+            Explore 4 interactive core pillars. Click on any pillar to trigger a real-time live demo with Pomify.
           </p>
         </div>
 
@@ -179,7 +178,7 @@ export const CapabilitiesGrid = () => {
                   <label className="text-sm font-bold text-pomify-navy block">Auto Task Sorter Demo:</label>
                   <div className="p-3 rounded-2xl bg-purple-50/60 border border-purple-100 space-y-2 text-xs">
                     <div className="flex items-center justify-between font-semibold text-pomify-navy">
-                      <span>✓ Finish Pomify Web Spec</span>
+                      <span>✓ Finish Pomify Web Specs</span>
                       <span className="text-pomify-purple">09:00 AM</span>
                     </div>
                     <div className="flex items-center justify-between font-semibold text-pomify-navy">
@@ -196,7 +195,7 @@ export const CapabilitiesGrid = () => {
               {activeTab === 'suggestion' && (
                 <div className="space-y-3">
                   <label className="text-sm font-bold text-pomify-navy block">AI Workstyle Insight:</label>
-                  <p className="text-xs text-pomify-subtext">Pomify phát hiện bạn vừa làm việc liên tục 2 giờ. Khuyên dùng bài nhạc Lofi nhẹ nhàng.</p>
+                  <p className="text-xs text-pomify-subtext">Pomify detected you have been working continuously for 2 hours. Recommending a calming Lofi playlist.</p>
                   <Button variant="pink" size="sm" onClick={() => runDemoAction('suggestion')}>
                     Get AI Recommendation
                   </Button>

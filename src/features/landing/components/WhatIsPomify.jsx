@@ -15,32 +15,32 @@ export const WhatIsPomify = () => {
     {
       id: 'manage',
       title: 'Manage Your Life',
-      subtitle: 'Quản lý công việc & thời gian',
-      description: 'Pomify tự động sắp xếp các nhiệm vụ trong ngày ngăn nắp, giúp bạn giữ tinh thần thoải mái.',
+      subtitle: 'Work & Time Management',
+      description: 'Pomify automatically organizes your daily tasks neatly, keeping your mind relaxed and clear.',
       icon: Calendar,
       color: 'bg-purple-100 text-pomify-purple-dark',
     },
     {
       id: 'remind',
       title: 'Smart Reminders',
-      subtitle: 'Nhắc nhở thông minh & quan tâm',
-      description: 'Nhắc lịch hẹn, uống nước, nghỉ ngơi hợp lý đúng thời điểm mà không gây phiền phức.',
+      subtitle: 'Smart & Caring Alerts',
+      description: 'Gently reminds you of appointments, hydration, and well-timed breaks without being intrusive.',
       icon: Bell,
       color: 'bg-pink-100 text-pink-700',
     },
     {
       id: 'plan',
       title: 'Adaptive Planning',
-      subtitle: 'Lập kế hoạch thích ứng',
-      description: 'Linh hoạt điều chỉnh lịch trình khi có công việc đột xuất hoặc thay đổi ưu tiên.',
+      subtitle: 'Adaptive Scheduling',
+      description: 'Flexibly adjusts your schedule whenever unexpected tasks arise or priorities shift.',
       icon: ListTodo,
       color: 'bg-blue-100 text-blue-700',
     },
     {
       id: 'connect',
       title: 'Voice & Chat Connection',
-      subtitle: 'Tương tác giọng nói & Chat',
-      description: 'Trò chuyện tự nhiên như một người bạn thực sự với sóng âm giọng nói và cảm xúc linh hoạt.',
+      subtitle: 'Voice & Chat Interaction',
+      description: 'Converse naturally like a real friend with fluid voice waves and expressive emotional reactions.',
       icon: MessageSquare,
       color: 'bg-emerald-100 text-emerald-700',
     },
@@ -61,7 +61,7 @@ export const WhatIsPomify = () => {
             <span className="text-pomify-purple">A companion that truly cares.</span>
           </h2>
           <p className="text-base sm:text-lg text-pomify-subtext leading-relaxed">
-            Pomify không chỉ là một ứng dụng trợ lý thông thường. Đây là sinh thể robot AI có tính cách, mang tới sự thư thái, năng suất và kết nối ấm áp cho không gian làm việc của bạn.
+            Pomify is more than a standard assistant app. It is a personality-filled AI companion robot bringing serenity, productivity, and warm emotional connection to your workspace.
           </p>
         </div>
 
