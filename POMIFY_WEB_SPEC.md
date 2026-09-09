@@ -162,10 +162,37 @@ module.exports = {
 * **Chức năng:** Trang chuyển đổi bán hàng ("Your Pomify. Your Companion.").
 * **Bố cục Web:** Trình xem 3D tương tác (Xoay 360°, Zoom, đổi biểu cảm) bên trái + Khối đặt hàng & thông số bên phải. Cuộn xuống để xem Video phần cứng, vật phẩm đi kèm và FAQ.
 
-### 3.10. Trang Về Chúng Tôi (About Us)
-* **Chức năng:** Câu chuyện thương hiệu, Tầm nhìn, Sứ mệnh và Đội ngũ phát triển.
-* **Bố cục Web:** Grid thành viên: Kim Ngọc (CEO), Mai Anh (CMO), Gia Bảo (CFO), Ngọc Trâm (CTO), Quốc Việt (CPO).
-* **Hoạt ảnh:** Hover vào ảnh thành viên -> Ảnh phóng to nhẹ + Robot xuất hiện bên cạnh hướng mắt về thành viên đó.
+### 3.11. Trang Đăng Nhập & Đăng Ký (Login & Register - `/login`, `/register`)
+* **Chức năng:** Quản lý truy cập tài khoản người dùng ("Welcome Back to Pomify Universe").
+* **Bố cục Web:** Split Layout 2 cột: Bên trái là Card Glassmorphism form nhập liệu (Email, Mật khẩu, Ghi nhớ đăng nhập), Bên phải là Robot 3D tương tác chào đón.
+* **Hoạt ảnh & Tương tác:** Form switch mượt giữa Đăng nhập & Đăng ký. Robot 3D mỉm cười khi gõ email và che mắt lại (Playful / Shy) khi gõ mật khẩu.
+
+### 3.12. Trang Quên Mật Khẩu & Gửi Mã OTP Qua Mail (`/forgot-password`, `/reset-password`)
+* **Chức năng:** Khôi phục mật khẩu tài khoản bằng mã xác minh OTP 6 chữ số gửi trực tiếp qua Email.
+* **Cấu hình Mailer:**
+  * **Email gửi (SMTP Service):** `EMAIL_USER=oroka150@gmail.com`
+  * **App Password / Pass:** `EMAIL_PASS=zcxdwjjmwkdskujd`
+* **Quy trình trải nghiệm (User Flow):**
+  1. Nhập Email tài khoản -> Nhấp nút `[Send OTP Code]`.
+  2. Hệ thống gửi Email OTP HTML chuẩn giao diện Pastel Cute với mã 6 số ngẫu nhiên (Hạn dùng 5 phút).
+  3. Người dùng nhập mã OTP trên giao diện 6 ô pin -> Xác nhận thành công -> Nhập mật khẩu mới -> Đăng nhập lại.
+
+### 3.13. Trang Giỏ Hàng & Thanh Toán (Cart & Checkout - `/cart`, `/checkout`)
+* **Chức năng:** Quản lý danh sách sản phẩm chờ mua & Hoàn tất đơn đặt hàng Pomify.
+* **Trang Giỏ Hàng (`/cart`):** Bảng danh sách sản phẩm (Tên, phiên bản custom 3D, đơn giá, số lượng, xóa), ô nhập mã giảm giá (Coupon), tổng tiền và nút `[Proceed to Checkout]`.
+* **Trang Thanh Toán (`/checkout`):**
+  * **Hỗ trợ Guest Checkout:** Cho phép người dùng mua hàng nhanh mà không bắt buộc đăng nhập (có tùy chọn tạo tài khoản sau khi mua).
+  * **Cột trái:** Thông tin giao hàng (Họ tên, Số điện thoại, Email nhận thông báo, Địa chỉ nhận hàng, Ghi chú).
+  * **Cột phải:** 3 Phương thức thanh toán tiêu chuẩn:
+    1. COD - Thanh toán tiền mặt khi nhận hàng
+    2. Chuyển khoản QR Ngân hàng (VietQR / Napas)
+    3. Thẻ quốc tế Visa / Mastercard
+  * Nút `[Place Order]` -> Kích hoạt hiệu ứng pháo hoa Sparkles + Gửi email xác nhận đơn hàng tới email người mua qua SMTP Service (`oroka150@gmail.com`).
+
+### 3.14. Trang Lịch Sử Mua Hàng & Quản Lý Đơn Hàng (`/orders`, `/profile`)
+* **Chức năng:** Xem danh sách các đơn hàng đã đặt, trạng thái vận chuyển và thông tin cá nhân.
+* **Bố cục Web:** Tabbed Dashboard (Đơn hàng gần đây, Đã giao, Đã hủy, Cài đặt tài khoản).
+* **Chi tiết đơn hàng:** Mã đơn hàng (`#POM-88291`), ngày đặt, trạng thái (Processing 🚚 -> Shipping 📦 -> Delivered 🎉), mô hình Pomify Custom đã chọn và tổng tiền.
 
 ---
 
@@ -180,9 +207,13 @@ module.exports = {
 | **5** | Our Robot | **Bảo** | 3D Model Hardware Anatomy, Callout Lines & Scroll Rotate |
 | **6** | Features | **Bảo** | Features Catalog Grid, Micro-animations & Robot Emotion Cycle |
 | **7** | About Us | **Bảo** | Brand Story Layout, Team Roster Hover Reactions |
-| **8** | Customize | **Trâm** | 3-Column Studio Layout, 3D Model Real-time Material Swap |
-| **9** | Shop | **Trâm** | Store Landing Hero, Interactive Purchase CTAs |
+| **8** | Customize Studio | **Trâm** | 3-Column Studio Layout, 3D Model Real-time Material Swap |
+| **9** | Shop Landing | **Trâm** | Store Landing Hero, Interactive Purchase CTAs |
 | **10** | Product Detail | **Trâm** | 3D Product Viewer (Rotate/Zoom Controls), E-commerce Flow |
+| **11** | Auth (Login/Register) | **Trâm** | Form UI Glassmorphism, Shy Robot Password Eyes Reaction |
+| **12** | OTP Forgot Password | **Trâm** | OTP 6-Digit Verification UI, Email Service Integration (`oroka150@gmail.com`) |
+| **13** | Cart & Checkout | **Trâm** | E-commerce Cart Page, Shipping Form & Order Checkout Flow |
+| **14** | Order History | **Trâm** | User Orders Dashboard, Status Tracking & Profile Specs |
 
 ---
 
@@ -203,11 +234,17 @@ npm install three @react-three/fiber @react-three/drei
 npm install framer-motion gsap @rive-app/react-canvas lottie-react
 
 # Cài đặt Web Speech & Utilities
-npm install react-speech-recognition howler axios zustand
+npm install react-speech-recognition howler axios zustand nodemailer @emailjs/browser
 ```
 
 ---
-*Tài liệu đã được cập nhật chuẩn xác bao gồm TailwindCSS & Design System cho **Website Pomify** (React / JS).*
+
+### 📧 6. Cấu Hình Email Service (OTP & Order Confirmation)
+```env
+# Mail Service Configuration (.env)
+VITE_EMAIL_SERVICE_USER=oroka150@gmail.com
+VITE_EMAIL_SERVICE_PASS=zcxdwjjmwkdskujd
+```
 
 ---
-*Tài liệu đã được cập nhật chính xác cho **Website Pomify** (React / JS).*
+*Tài liệu đã được cập nhật chính xác bao gồm Quy chuẩn Đăng ký, Đăng nhập, OTP Mailer, Giỏ hàng, Checkout & Lịch sử mua hàng cho **Website Pomify** (React / JS).*
