@@ -1,17 +1,34 @@
-/* Global Styles & Pomify Theme Tokens */
-:root {
-  --color-pomify-purple: #A78BFA;
-  --color-pomify-blue: #93C5FD;
-  --color-pomify-pink: #FBCFE8;
-  --color-pomify-mint: #A7F3D0;
-  --color-pomify-bg: #F9F9FB;
-  --color-pomify-navy: #1E1B4B;
-}
+@import "tailwindcss";
+
+@import './variables.css';
+@import './glassmorphism.css';
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 body {
+  font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif;
+  background-color: var(--pomify-bg);
+  color: var(--pomify-navy);
+  overflow-x: hidden;
   margin: 0;
   padding: 0;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: var(--color-pomify-bg);
-  color: var(--color-pomify-navy);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+::-webkit-scrollbar-thumb {
+  background: #C4B5FD;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #A78BFA;
 }
