@@ -26,9 +26,9 @@ h1, h2, h3, h4, h5, h6 {
   background: #F1F5F9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #C4B5FD;
+  background: #60A5FA;
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #A78BFA;
+  background: #3B82F6;
 }

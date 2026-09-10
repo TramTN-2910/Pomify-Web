@@ -7,7 +7,7 @@ export const Badge = ({
   icon: Icon = null,
 }) => {
   const variants = {
-    purple: 'bg-purple-100 text-pomify-purple-dark border-purple-200',
+    purple: 'bg-blue-100 text-blue-700 border-blue-200',
     blue: 'bg-blue-100 text-blue-800 border-blue-200',
     pink: 'bg-pink-100 text-pink-800 border-pink-200',
     mint: 'bg-emerald-100 text-emerald-800 border-emerald-200',

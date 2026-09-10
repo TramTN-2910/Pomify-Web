@@ -7,19 +7,32 @@ export default {
   theme: {
     extend: {
       colors: {
+        purple: {
+          50: '#EFF6FF',
+          100: '#DBEAFE',
+          200: '#BFDBFE',
+          300: '#93C5FD',
+          400: '#60A5FA',
+          500: '#3B82F6',
+          600: '#2563EB',
+          700: '#1D4ED8',
+          800: '#1E40AF',
+          900: '#1E3A8A',
+          950: '#172554',
+        },
         pomify: {
-          purple: '#A78BFA',  // Pastel Purple
-          'purple-light': '#C4B5FD',
-          'purple-dark': '#7C3AED',
-          blue: '#93C5FD',    // Baby Blue
-          'blue-light': '#BFDBFE',
+          purple: '#3B82F6',  // Mascot Blue Primary
+          'purple-light': '#60A5FA',
+          'purple-dark': '#1D4ED8',
+          blue: '#3B82F6',    // Mascot Blue
+          'blue-light': '#93C5FD',
           pink: '#FBCFE8',    // Pastel Pink
           'pink-light': '#FCE7F3',
           mint: '#A7F3D0',    // Mint
           'mint-light': '#D1FAE5',
-          bg: '#F9F9FB',      // Off-white / Cream
+          bg: '#F8FAFC',      // Off-white / Soft Blue tint
           card: '#FFFFFF',
-          navy: '#1E1B4B',    // Navy text
+          navy: '#0F172A',    // Slate Navy text
           subtext: '#64748B',  // Slate subtext
         }
       },
@@ -32,9 +45,9 @@ export default {
         'glass-lg': '24px',
       },
       boxShadow: {
-        'soft-glass': '0 8px 32px 0 rgba(167, 139, 250, 0.12)',
-        'cute-float': '0 20px 40px -15px rgba(30, 27, 75, 0.08)',
-        'glow-purple': '0 0 25px rgba(167, 139, 250, 0.35)',
+        'soft-glass': '0 8px 32px 0 rgba(59, 130, 246, 0.15)',
+        'cute-float': '0 20px 40px -15px rgba(15, 23, 42, 0.08)',
+        'glow-purple': '0 0 25px rgba(59, 130, 246, 0.35)',
         'glow-mint': '0 0 25px rgba(167, 243, 208, 0.35)',
       },
       animation: {

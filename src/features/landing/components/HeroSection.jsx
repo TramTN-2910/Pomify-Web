@@ -85,7 +85,7 @@ export const HeroSection = () => {
               </div>
 
               {/* Mini Highlights */}
-              <div className="pt-6 grid grid-cols-3 gap-4 border-t border-purple-100/80 max-w-lg">
+              <div className="pt-6 grid grid-cols-3 gap-4 border-t border-blue-100/80 max-w-lg">
                 <div className="flex items-center gap-2">
                   <Heart className="w-5 h-5 text-pomify-purple" />
                   <span className="text-xs font-semibold text-pomify-navy">Cute LED Face</span>
@@ -121,7 +121,7 @@ export const HeroSection = () => {
               >
                 <GlassCard className="!p-4 border-white/90 shadow-soft-glass backdrop-blur-md">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-2xl bg-purple-100 flex items-center justify-center text-pomify-purple font-bold">
+                    <div className="w-9 h-9 rounded-2xl bg-blue-100 flex items-center justify-center text-pomify-purple font-bold">
                       💡
                     </div>
                     <div>

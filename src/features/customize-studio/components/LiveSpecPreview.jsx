@@ -24,21 +24,21 @@ export const LiveSpecPreview = ({ onSaveTrigger }) => {
 
   const handleSave = () => {
     saveDesign();
-    setBubbleText("Yep. That's me! 💜", true);
+    setBubbleText("Yep. That's me! 💙", true);
     triggerReaction('happy');
     if (onSaveTrigger) onSaveTrigger();
   };
 
   return (
-    <div className="flex flex-col h-full bg-white/70 backdrop-blur-xl border border-purple-100 rounded-3xl p-5 shadow-soft-glass">
+    <div className="flex flex-col h-full bg-white/70 backdrop-blur-xl border border-blue-100 rounded-3xl p-5 shadow-soft-glass">
       
       {/* Live Spec Title */}
-      <div className="flex items-center justify-between border-b border-purple-100 pb-3 mb-4">
+      <div className="flex items-center justify-between border-b border-blue-100 pb-3 mb-4">
         <div>
           <h3 className="text-base font-extrabold text-pomify-navy">Custom Specs</h3>
           <p className="text-xs text-pomify-subtext">Real-time configuration preview</p>
         </div>
-        <span className="px-2.5 py-1 rounded-full bg-purple-100 text-pomify-purple-dark text-[11px] font-bold">
+        <span className="px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 text-[11px] font-bold">
           Live Build
         </span>
       </div>
@@ -47,7 +47,7 @@ export const LiveSpecPreview = ({ onSaveTrigger }) => {
       <div className="flex-1 overflow-y-auto space-y-3.5 pr-1">
         
         {/* Robot Name & Personality */}
-        <div className="p-3 bg-purple-50/60 rounded-2xl border border-purple-100/80">
+        <div className="p-3 bg-blue-50/60 rounded-2xl border border-blue-100/80">
           <div className="text-[10px] uppercase font-bold text-pomify-purple tracking-wider">Custom Identity</div>
           <div className="text-sm font-extrabold text-pomify-navy mt-0.5">{robotName}</div>
           <div className="text-xs text-pomify-subtext mt-0.5 font-medium">{personality.name} Edition</div>

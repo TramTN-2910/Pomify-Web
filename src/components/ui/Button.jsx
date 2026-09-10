@@ -15,11 +15,11 @@ export const Button = ({
   const baseStyles = 'inline-flex items-center justify-center font-bold transition-all duration-300 rounded-full cursor-pointer focus:outline-none select-none';
   
   const variants = {
-    primary: 'bg-gradient-to-r from-purple-600 via-pomify-purple to-purple-600 text-white shadow-cute-float hover:shadow-glow-purple hover:brightness-110 border border-white/40',
-    secondary: 'bg-white/90 backdrop-blur-md text-pomify-navy border border-purple-200 hover:border-pomify-purple shadow-sm hover:shadow-md hover:bg-white',
-    pink: 'bg-gradient-to-r from-pink-500 to-pomify-purple text-white font-extrabold shadow-cute-float hover:shadow-glow-purple',
+    primary: 'bg-gradient-to-r from-blue-600 via-sky-500 to-blue-600 text-white shadow-cute-float hover:shadow-glow-purple hover:brightness-110 border border-white/40',
+    secondary: 'bg-white/90 backdrop-blur-md text-pomify-navy border border-blue-200 hover:border-pomify-purple shadow-sm hover:shadow-md hover:bg-white',
+    pink: 'bg-gradient-to-r from-blue-600 to-sky-400 text-white font-extrabold shadow-cute-float hover:shadow-glow-purple',
     glass: 'glass-pill text-pomify-navy font-semibold hover:text-pomify-purple-dark hover:border-pomify-purple/40',
-    ghost: 'text-pomify-navy hover:text-pomify-purple hover:bg-purple-50/60',
+    ghost: 'text-pomify-navy hover:text-pomify-purple hover:bg-blue-50/60',
   };
 
   const sizes = {

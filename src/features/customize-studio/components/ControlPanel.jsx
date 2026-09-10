@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Palette, Sparkles, Smile, Glasses, Cpu, Check, Layers } from 'lucide-react';
+import { Palette, Sparkles, Smile, Glasses, Cpu, Check, Layers, Bot } from 'lucide-react';
 import useCustomizerStore, {
+  MODEL_OPTIONS,
   COLOR_OPTIONS,
   FINISH_OPTIONS,
   EXPRESSION_OPTIONS,
@@ -9,15 +10,17 @@ import useCustomizerStore, {
 } from '../store/customizerStore';
 
 export const ControlPanel = () => {
-  const [activeTab, setActiveTab] = useState('color');
+  const [activeTab, setActiveTab] = useState('model');
 
   const {
+    modelType,
     color,
     finish,
     expression,
     accessories,
     personality,
     robotName,
+    setModelType,
     setColor,
     setFinish,
     setExpression,
@@ -27,6 +30,7 @@ export const ControlPanel = () => {
   } = useCustomizerStore();
 
   const tabs = [
+    { id: 'model', label: '3D Model', icon: Bot },
     { id: 'color', label: 'Color & Material', icon: Palette },
     { id: 'face', label: 'Expressions', icon: Smile },
     { id: 'accessories', label: 'Accessories', icon: Glasses },
@@ -34,7 +38,7 @@ export const ControlPanel = () => {
   ];
 
   return (
-    <div className="flex flex-col h-full bg-white/70 backdrop-blur-xl border border-purple-100 rounded-3xl p-5 shadow-soft-glass">
+    <div className="flex flex-col h-full bg-white/70 backdrop-blur-xl border border-blue-100 rounded-3xl p-5 shadow-soft-glass">
       {/* Studio Header & Naming */}
       <div className="mb-4">
         <label className="block text-xs font-bold uppercase tracking-wider text-pomify-purple mb-1">
@@ -44,13 +48,13 @@ export const ControlPanel = () => {
           type="text"
           value={robotName}
           onChange={(e) => setRobotName(e.target.value)}
-          className="w-full px-4 py-2 rounded-2xl bg-white border border-purple-200 text-pomify-navy font-bold text-lg focus:outline-none focus:border-pomify-purple transition-all"
+          className="w-full px-4 py-2 rounded-2xl bg-white border border-blue-200 text-pomify-navy font-bold text-lg focus:outline-none focus:border-pomify-purple transition-all"
           placeholder="Name your Pomify..."
         />
       </div>
 
       {/* Tabs Row */}
-      <div className="flex items-center gap-1.5 p-1 bg-purple-50/80 rounded-2xl mb-5 border border-purple-100 overflow-x-auto">
+      <div className="flex items-center gap-1.5 p-1 bg-blue-50/80 rounded-2xl mb-5 border border-blue-100 overflow-x-auto">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -60,7 +64,7 @@ export const ControlPanel = () => {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
                 isActive
-                  ? 'bg-white text-pomify-purple-dark shadow-sm border border-purple-100'
+                  ? 'bg-white text-pomify-purple-dark shadow-sm border border-blue-100'
                   : 'text-pomify-subtext hover:text-pomify-navy hover:bg-white/50'
               }`}
             >
@@ -74,6 +78,48 @@ export const ControlPanel = () => {
       {/* Tab Contents */}
       <div className="flex-1 overflow-y-auto pr-1 space-y-5">
         
+        {/* TAB 0: 3D Model Preset Selection */}
+        {activeTab === 'model' && (
+          <div className="space-y-4">
+            <h4 className="text-sm font-bold text-pomify-navy mb-2 flex items-center gap-1.5">
+              <Bot className="w-4 h-4 text-pomify-purple" /> Select Robot 3D Model
+            </h4>
+            <div className="space-y-3">
+              {MODEL_OPTIONS.map((m) => {
+                const isSelected = modelType.id === m.id;
+                return (
+                  <button
+                    key={m.id}
+                    onClick={() => setModelType(m)}
+                    className={`w-full p-4 rounded-2xl border text-left flex items-start justify-between transition-all ${
+                      isSelected
+                        ? 'border-pomify-purple bg-blue-50/90 ring-2 ring-pomify-purple/30 shadow-sm'
+                        : 'border-slate-100 bg-white hover:border-blue-200'
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-extrabold text-pomify-navy">{m.name}</span>
+                        {m.id === 'customStl' && (
+                          <span className="px-2 py-0.5 rounded-full bg-purple-200/60 text-[10px] font-bold text-pomify-purple-dark">
+                            Custom STL CAD
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-pomify-subtext mt-1">{m.desc}</p>
+                    </div>
+                    <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-0.5 ${
+                      isSelected ? 'bg-pomify-purple border-pomify-purple text-white' : 'border-slate-300'
+                    }`}>
+                      {isSelected && <Check className="w-3 h-3" />}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* TAB 1: Color & Material */}
         {activeTab === 'color' && (
           <div className="space-y-5">
@@ -90,8 +136,8 @@ export const ControlPanel = () => {
                       onClick={() => setColor(c)}
                       className={`p-2.5 rounded-2xl border flex flex-col items-center gap-2 transition-all ${
                         isSelected
-                          ? 'border-pomify-purple bg-purple-50/80 shadow-sm ring-2 ring-pomify-purple/30'
-                          : 'border-slate-100 bg-white hover:border-purple-200'
+                          ? 'border-pomify-purple bg-blue-50/80 shadow-sm ring-2 ring-pomify-purple/30'
+                          : 'border-slate-100 bg-white hover:border-blue-200'
                       }`}
                     >
                       <div className="w-8 h-8 rounded-full shadow-inner flex items-center justify-center" style={{ backgroundColor: c.bodyColor }}>
@@ -118,8 +164,8 @@ export const ControlPanel = () => {
                       onClick={() => setFinish(f)}
                       className={`p-2.5 rounded-2xl border text-center transition-all ${
                         isSelected
-                          ? 'border-pomify-purple bg-purple-50/80 font-bold text-pomify-purple-dark shadow-sm'
-                          : 'border-slate-100 bg-white text-pomify-subtext hover:border-purple-200'
+                          ? 'border-pomify-purple bg-blue-50/80 font-bold text-pomify-purple-dark shadow-sm'
+                          : 'border-slate-100 bg-white text-pomify-subtext hover:border-blue-200'
                       }`}
                     >
                       <div className="text-xs font-semibold">{f.name}</div>
@@ -147,8 +193,8 @@ export const ControlPanel = () => {
                     onClick={() => setExpression(exp)}
                     className={`p-3 rounded-2xl border flex items-center gap-3 transition-all ${
                       isSelected
-                        ? 'border-pomify-purple bg-purple-50/80 ring-2 ring-pomify-purple/30'
-                        : 'border-slate-100 bg-white hover:border-purple-200'
+                        ? 'border-pomify-purple bg-blue-50/80 ring-2 ring-pomify-purple/30'
+                        : 'border-slate-100 bg-white hover:border-blue-200'
                     }`}
                   >
                     <span className="text-2xl">{exp.icon}</span>
@@ -175,8 +221,8 @@ export const ControlPanel = () => {
                     onClick={() => toggleAccessory(acc)}
                     className={`p-3 rounded-2xl border flex items-center justify-between transition-all ${
                       isSelected
-                        ? 'border-pomify-purple bg-purple-50/80 ring-2 ring-pomify-purple/30'
-                        : 'border-slate-100 bg-white hover:border-purple-200'
+                        ? 'border-pomify-purple bg-blue-50/80 ring-2 ring-pomify-purple/30'
+                        : 'border-slate-100 bg-white hover:border-blue-200'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">

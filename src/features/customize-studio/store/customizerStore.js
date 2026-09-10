@@ -1,11 +1,12 @@
 import { create } from 'zustand';
 
 export const COLOR_OPTIONS = [
+  { id: 'mascotBlue', name: 'Mascot Blue', bodyColor: '#3B82F6', accentColor: '#60A5FA', price: 0 },
   { id: 'purple', name: 'Pastel Purple', bodyColor: '#A78BFA', accentColor: '#C4B5FD', price: 0 },
   { id: 'blue', name: 'Baby Blue', bodyColor: '#93C5FD', accentColor: '#BFDBFE', price: 0 },
   { id: 'pink', name: 'Sakura Pink', bodyColor: '#FBCFE8', accentColor: '#FCE7F3', price: 0 },
   { id: 'mint', name: 'Fresh Mint', bodyColor: '#A7F3D0', accentColor: '#D1FAE5', price: 0 },
-  { id: 'violet', name: 'Midnight Violet', bodyColor: '#4C1D95', accentColor: '#7C3AED', price: 15 },
+  { id: 'violet', name: 'Midnight Violet', bodyColor: '#1D4ED8', accentColor: '#3B82F6', price: 15 },
   { id: 'pearl', name: 'Pearl White', bodyColor: '#FFFFFF', accentColor: '#E2E8F0', price: 10 },
 ];
 
@@ -39,9 +40,15 @@ export const PERSONALITY_OPTIONS = [
   { id: 'chill', name: 'Zen Relaxer', desc: 'Calming, ambient guidance & mindful breaks' },
 ];
 
+export const MODEL_OPTIONS = [
+  { id: 'customStl', name: 'Pomify CAD Robot', desc: 'High-detail 3D Hardware Model', price: 0 },
+  { id: 'procedural', name: 'Pomify Cute Avatar', desc: 'Stylized Companion Avatar', price: 0 },
+];
+
 export const BASE_PRICE = 299;
 
 export const useCustomizerStore = create((set, get) => ({
+  modelType: MODEL_OPTIONS[0],
   color: COLOR_OPTIONS[0],
   finish: FINISH_OPTIONS[0],
   expression: EXPRESSION_OPTIONS[0],
@@ -50,6 +57,7 @@ export const useCustomizerStore = create((set, get) => ({
   robotName: 'Pomify Custom',
   isSaved: false,
 
+  setModelType: (modelType) => set({ modelType, isSaved: false }),
   setColor: (color) => set({ color, isSaved: false }),
   setFinish: (finish) => set({ finish, isSaved: false }),
   setExpression: (expression) => set({ expression, isSaved: false }),
