@@ -1,9 +1,17 @@
 @import "tailwindcss";
-
 @import './variables.css';
 @import './glassmorphism.css';
-
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+@theme {
+  --color-pomify-purple: #3B82F6;
+  --color-pomify-purple-light: #60A5FA;
+  --color-pomify-purple-dark: #1D4ED8;
+  --color-pomify-blue: #3B82F6;
+  --color-pomify-navy: #0F172A;
+  --color-pomify-subtext: #64748B;
+  --color-pomify-bg: #F8FAFC;
+}
 
 body {
   font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif;

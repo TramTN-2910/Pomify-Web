@@ -58,10 +58,6 @@ export const ShopFeatureCards = () => {
                 <h3 className="text-lg font-bold text-pomify-navy">{item.title}</h3>
                 <p className="text-xs text-pomify-subtext leading-relaxed">{item.desc}</p>
               </div>
-              <div className="pt-4 mt-4 border-t border-purple-50 flex items-center gap-1 text-[11px] font-bold text-pomify-purple">
-                <span>Learn hardware specs</span>
-                <Sparkles className="w-3 h-3" />
-              </div>
             </motion.div>
           );
         })}

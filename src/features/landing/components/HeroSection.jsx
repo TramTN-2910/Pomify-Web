@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, ArrowRight, Bot, ShieldCheck, Heart, Zap } from 'lucide-react';
+import { Sparkles, ArrowRight, Bot, ShieldCheck, Heart, Zap, HeartHandshake } from 'lucide-react';
 import Button from '../../../components/ui/Button';
 import GlassCard from '../../../components/ui/GlassCard';
 import SpeechBubble from '../../../components/ui/SpeechBubble';
@@ -140,7 +140,7 @@ export const HeroSection = () => {
                 <GlassCard className="!p-4 border-white/90 shadow-soft-glass backdrop-blur-md">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-2xl bg-pink-100 flex items-center justify-center text-pink-600 font-bold">
-                      🫶
+                      <HeartHandshake className="w-5 h-5 text-pink-600" />
                     </div>
                     <div>
                       <p className="text-xs font-bold text-pomify-navy">Caring Companion</p>

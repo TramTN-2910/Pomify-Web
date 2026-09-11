@@ -15,11 +15,11 @@ export const Button = ({
   const baseStyles = 'inline-flex items-center justify-center font-bold transition-all duration-300 rounded-full cursor-pointer focus:outline-none select-none';
   
   const variants = {
-    primary: 'bg-gradient-to-r from-blue-600 via-sky-500 to-blue-600 text-white shadow-cute-float hover:shadow-glow-purple hover:brightness-110 border border-white/40',
-    secondary: 'bg-white/90 backdrop-blur-md text-pomify-navy border border-blue-200 hover:border-pomify-purple shadow-sm hover:shadow-md hover:bg-white',
-    pink: 'bg-gradient-to-r from-blue-600 to-sky-400 text-white font-extrabold shadow-cute-float hover:shadow-glow-purple',
-    glass: 'glass-pill text-pomify-navy font-semibold hover:text-pomify-purple-dark hover:border-pomify-purple/40',
-    ghost: 'text-pomify-navy hover:text-pomify-purple hover:bg-blue-50/60',
+    primary: 'bg-blue-600 hover:bg-blue-700 text-white shadow-cute-float hover:shadow-glow-purple border border-blue-500/20',
+    secondary: 'bg-white/90 backdrop-blur-md text-pomify-navy border border-blue-200 hover:border-blue-500 shadow-sm hover:shadow-md hover:bg-white',
+    pink: 'bg-pink-500 hover:bg-pink-600 text-white font-extrabold shadow-cute-float hover:shadow-glow-purple',
+    glass: 'glass-pill text-pomify-navy font-semibold hover:text-blue-700 hover:border-blue-400',
+    ghost: 'text-pomify-navy hover:text-blue-600 hover:bg-blue-50/60',
   };
 
   const sizes = {

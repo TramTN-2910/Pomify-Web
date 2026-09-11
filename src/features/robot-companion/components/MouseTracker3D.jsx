@@ -8,12 +8,12 @@ export const MouseTracker3D = ({ children }) => {
     const handleMouseMove = (event) => {
       // Normalize mouse coordinates to -1 to +1
       const x = (event.clientX / window.innerWidth) * 2 - 1;
-      const y = -(event.clientY / window.innerHeight) * 2 + 1;
+      const y = (event.clientY / window.innerHeight) * 2 - 1;
 
-      // Limit rotation range
+      // Limit rotation range with increased responsiveness
       setTargetRotation({
-        x: y * 0.5,
-        y: x * 0.8,
+        x: y * 0.8,
+        y: x * 1.0,
       });
     };
 

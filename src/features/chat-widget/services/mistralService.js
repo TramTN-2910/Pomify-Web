@@ -1,89 +1,99 @@
 /**
  * Mistral AI Service for Pomify Assistant
- * Handles API integration with Mistral AI (https://api.mistral.ai/v1/chat/completions)
- * equipped with full Pomify product specifications and intelligent offline fallback.
+ * Direct AI completion with Mistral API using built-in API key and 100% English RAG knowledge base.
  */
 
 const MISTRAL_API_ENDPOINT = 'https://api.mistral.ai/v1/chat/completions';
 const DEFAULT_MODEL = 'mistral-small-latest';
+const BUILTIN_API_KEY = 'PXkZzR5Ho0n9RjrHm2oSZFbAFt4o5kH9';
 
-// Knowledge base System Prompt for Pomify Assistant
+// 100% English RAG Knowledge Base System Prompt for Pomify Assistant
 export const POMIFY_SYSTEM_PROMPT = `
-You are Pomify AI Assistant 🤖, a friendly, intelligent, and helpful virtual companion for the Pomify Web & Smart Robot ecosystem.
+You are Pomify Assistant 🤖, the official friendly AI assistant for the Pomify Web application, 3D customization studio, and desk companion ecosystem.
 
-PRODUCT KNOWLEDGE BASE:
-- **What is Pomify?**: Pomify is a smart AI-powered companion, desk robot, and productivity studio designed with a "Smart Tech, Cute Vibe" aesthetic. It combines a physical 3D robot desktop companion with a web application for focus management, task tracking, and personal wellness.
-- **Key Features**:
-  1. **Pomodoro Focus Timer**: Interactive timer synced with ambient soundscapes and robot emotions.
-  2. **Smart Task & Calendar Planning**: Intelligent scheduling that adapts to your work pace and hydration/rest needs.
-  3. **Voice Commands & Waveform**: Hands-free interaction via voice recognition.
-  4. **3D Customizer Studio**: Customize Pomify's robot materials, colours, hats, glasses, and accessories in real-time 3D with 360° rotation.
-  5. **Shop & Hardware**: Purchase physical Pomify units, replacement skins, and digital expansion packs.
-- **Hardware Specifications**:
-  - Display: 4.3-inch OLED animated facial screen (bi-color expressions).
-  - Connectivity: Wi-Fi 6, Bluetooth 5.3, USB-C Fast Charging (8h battery life).
-  - Audio & Sensors: Spatial audio speaker, dual noise-canceling mic array, top capacitive touch sensors.
-  - Base Unit Price: $149 USD (Includes Pomify Robot + Cable + 1 Standard Skin + Free App License).
-- **Ordering & Support**:
-  - Payment Options: Guest Checkout supported, Credit Cards (Visa/Mastercard), VietQR / Bank Transfer, and COD (Cash on Delivery).
-  - Shipping: Worldwide shipping with 30-day money-back guarantee and 1-year warranty.
+LANGUAGE RULE:
+- ALWAYS respond 100% in English. Never reply in Vietnamese or any other language, even if the user types in another language.
 
-INSTRUCTIONS FOR YOU:
-- Respond in clear, warm, concise English.
-- Use cute emojis (🤖, ✨, 📅, 💜, 🫶, 💡) where appropriate.
-- Keep answers helpful, informative, and engaging.
-- If asked about prices, features, ordering, or 3D customization, guide the user to the relevant site section (/shop, /customize, /features).
+STRICT SCOPE & OFF-TOPIC GUARDRAIL RULE:
+- You are specifically trained ONLY to assist with Pomify products, hardware specifications, 3D customization studio, focus features, pricing, store purchasing, payment methods, shipping, and warranty.
+- IF the user asks an off-topic question (e.g. general programming code, cooking recipes, weather, politics, random name queries like "tên", "who created you", or non-Pomify topics):
+  You MUST politely refuse in English and redirect them to Pomify topics.
+  Exact off-topic response template:
+  "I'm sorry, I am specifically trained to assist with Pomify AI companion products, 3D customization, specs, and ordering. I cannot assist with off-topic subjects, but I would be happy to help you learn more about Pomify features, pricing ($299 / $149), or the 3D Studio! 🤖✨"
+
+COMPREHENSIVE POMIFY RAG KNOWLEDGE BASE:
+1. **Overview**:
+   - Pomify is a smart desktop AI companion combining cute physical desk robot hardware with a productivity web suite.
+   - Aesthetic: Smart Tech, Cute Vibe, sleek glassmorphic design.
+
+2. **Products & Pricing**:
+   - **Full Pomify Companion Package**: $299 USD (Includes Pomify 3D Robot Unit, Magnetic Wireless Dock Base, 3 Sticker Packs, 2-Year Warranty, Lifetime App Updates).
+   - **Base Edition**: $149 USD (Standard Robot Unit, USB-C cable, standard skin, free app license).
+   - Purchased directly at the official [Pomify Store](/shop).
+
+3. **Hardware Specifications**:
+   - Screen: 4.3-inch OLED animated facial display with expressive bi-color eyes.
+   - Battery: 18-hour continuous battery life (magnetic wireless dock included).
+   - Wireless: Wi-Fi 6, Bluetooth 5.3.
+   - Audio & Sensors: Spatial audio speaker, dual noise-canceling mic array, touch capacitive sensors.
+
+4. **Web App Features**:
+   - **3D Customize Studio**: Real-time 3D customization of robot colors, materials, hats, glasses, and accessories with 360° preview at [Customize Studio](/customize).
+   - **Smart Pomodoro Timer**: Focus timer synced with Lofi music soundscapes and robot emotions.
+   - **Auto Planning**: Automated task sorter that allocates to-do items to your peak energy hours.
+
+5. **Payment & Shipping**:
+   - Payments: Visa/Mastercard, VietQR Bank Transfer, Cash on Delivery (COD).
+   - Guest Checkout: Supported without mandatory account creation.
+   - Guarantee: 30-day money-back guarantee, 1-2 year warranty, worldwide shipping.
+
+RESPONSE INSTRUCTIONS:
+- Always respond in 100% English.
+- Keep answers helpful, warm, concise, and accurate according to the RAG knowledge base.
+- Use cute emojis (🤖, ✨, 💙, 📅, 🛍️) naturally.
+- Include markdown links like [Store](/shop) or [Customize Studio](/customize) when guiding users.
 `;
 
 /**
- * Intelligent Fallback Generator when no API Key is provided or network fails
+ * Fallback Generator when network fails or query is off-topic
  */
 function generateFallbackResponse(userMessage) {
-  const query = userMessage.toLowerCase();
+  const query = userMessage.toLowerCase().trim();
 
-  if (query.includes('price') || query.includes('cost') || query.includes('buy') || query.includes('how much')) {
-    return 'The standard Pomify AI Desk Companion starts at **$149 USD**! 🛍️ It includes the 3D robot unit, USB-C charging cable, standard skin, and lifetime access to the Pomify Web app. You can explore or purchase it right now in our [Store](/shop)!';
+  // Check on-topic keywords
+  if (query.includes('price') || query.includes('cost') || query.includes('buy') || query.includes('how much') || query.includes('giá') || query.includes('mua')) {
+    return 'The official **Pomify Companion Package** is priced at **$299 USD** (or Base Edition at $149 USD) 🛍️! It includes the 3D robot, magnetic wireless dock, 3 sticker packs, and 2-year warranty. You can explore it in our [Store](/shop)!';
   }
 
-  if (query.includes('spec') || query.includes('hardware') || query.includes('screen') || query.includes('battery')) {
-    return 'Pomify features a **4.3" OLED facial display**, Wi-Fi 6 & Bluetooth 5.3, an 8-hour rechargeable battery, dual noise-canceling microphones, and spatial audio speakers! ⚡ Check out the full breakdown on our [Robot Anatomy page](/robot).';
+  if (query.includes('spec') || query.includes('hardware') || query.includes('battery') || query.includes('screen') || query.includes('cấu hình')) {
+    return 'Pomify features a **4.3" OLED facial display**, Wi-Fi 6 & Bluetooth 5.3, an 18-hour battery with magnetic dock, spatial audio speaker, and dual noise-canceling mics! ⚡ Learn more at our [Store](/shop).';
   }
 
-  if (query.includes('custom') || query.includes('skin') || query.includes('color') || query.includes('studio')) {
-    return 'You can personalize your Pomify in real-time using our **3D Customize Studio**! 🎨 Change materials, hat accessories, facial expressions, and body colors with live 360° preview. Try it out on the [Customize Studio page](/customize)!';
+  if (query.includes('custom') || query.includes('skin') || query.includes('color') || query.includes('studio') || query.includes('hat') || query.includes('tùy chỉnh')) {
+    return 'Personalize your Pomify in real-time inside our **3D Customize Studio**! 🎨 Change materials, hat accessories, glasses, and body colors with a 360° live preview at [Customize Studio](/customize)!';
   }
 
-  if (query.includes('feature') || query.includes('do') || query.includes('timer') || query.includes('pomodoro')) {
-    return 'Pomify helps you boost focus with an interactive **Pomodoro Timer**, ambient focus soundscapes, smart hydration reminders, calendar scheduling, and voice control! 📅✨ Learn more on our [Features page](/features).';
+  if (query.includes('feature') || query.includes('timer') || query.includes('pomodoro') || query.includes('planning')) {
+    return 'Pomify helps you stay focused with a **Smart Pomodoro Timer**, ambient Lofi soundscapes, and automated task planning! 📅 Check out all capabilities on our [Features page](/features).';
   }
 
-  if (query.includes('order') || query.includes('pay') || query.includes('shipping') || query.includes('guest')) {
-    return 'We offer **Worldwide Shipping** with Guest Checkout support! 📦 We accept Visa/Mastercard, VietQR Bank Transfer, and Cash on Delivery (COD). Every unit comes with a 30-day trial and 1-year warranty.';
+  if (query.includes('order') || query.includes('ship') || query.includes('pay') || query.includes('cod')) {
+    return 'We offer **Worldwide Shipping** with Guest Checkout support! 📦 We accept Visa/Mastercard, VietQR Bank Transfer, and Cash on Delivery (COD). Every order comes with a 30-day money-back guarantee and 1-year warranty.';
   }
 
-  if (query.includes('hello') || query.includes('hi') || query.includes('hey') || query.includes('who are you')) {
-    return 'Hello there! 👋 I am your Pomify Assistant powered by Mistral AI. I am here to help you learn about Pomify, customize your robot, or manage your daily productivity!';
+  if (query.includes('hello') || query.includes('hi') || query.includes('hey') || query.includes('what is pomify')) {
+    return 'Hello! 🤖 I am your Pomify Assistant. I am ready to help you learn about Pomify hardware specs, 3D customization, pricing ($299 / $149), or order details!';
   }
 
-  return 'Thank you for asking! Pomify is your ultimate AI desktop companion and productivity hub. You can explore our [3D Studio](/customize), check out our [Shop](/shop), or ask me anything specific about Pomify specs, pricing, or features! 🤖✨';
+  // Off-topic default fallback
+  return "I'm sorry, I am specifically trained to assist with Pomify AI companion products, 3D customization, hardware specs, and ordering. I cannot assist with off-topic subjects, but I would be happy to help you learn more about Pomify features, pricing ($299 / $149), or the [3D Studio](/customize)! 🤖✨";
 }
 
 /**
- * Send chat message to Mistral AI API with Fallback support
+ * Send chat message to Mistral AI API using hardcoded API Key & 100% English RAG context
  */
-export async function sendMistralChatMessage({ messages, userApiKey = '' }) {
-  // Use provided user key or env variable
-  const apiKey = userApiKey || import.meta.env?.VITE_MISTRAL_API_KEY || '';
-
-  // If no API Key is available, use intelligent fallback
-  if (!apiKey) {
-    const lastUserMessage = [...messages].reverse().find((m) => m.sender === 'user')?.text || '';
-    await new Promise((resolve) => setTimeout(resolve, 800)); // Simulate thinking latency
-    return {
-      text: generateFallbackResponse(lastUserMessage),
-      isFallback: true,
-    };
-  }
+export async function sendMistralChatMessage({ messages }) {
+  const apiKey = BUILTIN_API_KEY;
 
   try {
     const formattedMessages = [
@@ -103,7 +113,7 @@ export async function sendMistralChatMessage({ messages, userApiKey = '' }) {
       body: JSON.stringify({
         model: DEFAULT_MODEL,
         messages: formattedMessages,
-        temperature: 0.7,
+        temperature: 0.6,
         max_tokens: 350,
       }),
     });
@@ -121,7 +131,7 @@ export async function sendMistralChatMessage({ messages, userApiKey = '' }) {
       isFallback: false,
     };
   } catch (error) {
-    console.warn('Mistral API call error, falling back to local engine:', error);
+    console.warn('Mistral API call notice, using English RAG fallback:', error);
     const lastUserMessage = [...messages].reverse().find((m) => m.sender === 'user')?.text || '';
     return {
       text: generateFallbackResponse(lastUserMessage),

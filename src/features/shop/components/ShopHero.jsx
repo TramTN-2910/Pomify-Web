@@ -31,7 +31,7 @@ export const ShopHero = () => {
   };
 
   return (
-    <section className="relative pt-28 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
+    <section className="relative pt-6 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
       
       {/* Background Decorative Glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-purple-200/40 via-blue-200/30 to-pink-200/40 rounded-full blur-3xl pointer-events-none -z-10" />
@@ -47,7 +47,7 @@ export const ShopHero = () => {
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-pomify-navy tracking-tight leading-tight">
-            Ready to Meet Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-pomify-purple via-purple-600 to-pomify-blue">Pomify Companion?</span>
+            Ready to Meet Your <span className="text-pomify-purple">Pomify Companion?</span>
           </h1>
 
           <p className="text-base sm:text-lg text-pomify-subtext max-w-xl leading-relaxed">

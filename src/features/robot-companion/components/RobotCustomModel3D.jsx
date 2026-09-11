@@ -73,17 +73,17 @@ export const RobotCustomModel3D = ({
   useFrame(() => {
     if (!robotRef.current) return;
 
-    // Smooth subtle mouse-look rotation tracking
+    // Fast and smooth mouse-look rotation tracking
     if (interactive && targetRotation) {
       robotRef.current.rotation.y = THREE.MathUtils.lerp(
         robotRef.current.rotation.y,
-        targetRotation.y * 0.4,
-        0.06
+        targetRotation.y * 0.7,
+        0.15
       );
       robotRef.current.rotation.x = THREE.MathUtils.lerp(
         robotRef.current.rotation.x,
-        targetRotation.x * 0.2,
-        0.06
+        targetRotation.x * 0.45,
+        0.15
       );
     }
   });

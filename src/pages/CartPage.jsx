@@ -14,7 +14,7 @@ export const CartPage = () => {
 
   return (
     <PageContainer>
-      <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-8 text-left">
+      <div className="pt-6 pb-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-8 text-left">
         
         {/* Header */}
         <div className="border-b border-purple-100 pb-6 flex items-center justify-between">

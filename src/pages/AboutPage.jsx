@@ -7,9 +7,7 @@ export const AboutPage = () => {
   return (
     <MouseTracker3D>
       <PageContainer>
-        <div className="py-8">
-          <TeamGrid />
-        </div>
+        <TeamGrid />
       </PageContainer>
     </MouseTracker3D>
   );

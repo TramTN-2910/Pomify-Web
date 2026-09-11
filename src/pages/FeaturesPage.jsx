@@ -7,9 +7,7 @@ export const FeaturesPage = () => {
   return (
     <MouseTracker3D>
       <PageContainer>
-        <div className="py-8">
-          <FeaturesCatalog />
-        </div>
+        <FeaturesCatalog />
       </PageContainer>
     </MouseTracker3D>
   );

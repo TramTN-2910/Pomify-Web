@@ -58,7 +58,7 @@ export const TeamGrid = () => {
   ];
 
   return (
-    <section id="about" className="py-24 relative overflow-hidden bg-gradient-to-b from-white via-purple-50/20 to-white">
+    <section id="about" className="pt-6 pb-16 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
@@ -142,13 +142,6 @@ export const TeamGrid = () => {
                   <p className="text-xs font-semibold text-pomify-purple">{member.role}</p>
                 </div>
                 <p className="text-xs text-pomify-subtext leading-relaxed">{member.description}</p>
-                {isHovered && (
-                  <div className="pt-2">
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-pomify-purple bg-purple-50 px-3 py-1 rounded-full animate-bounce">
-                      🤖 Pomify Says Hi!
-                    </span>
-                  </div>
-                )}
               </GlassCard>
             );
           })}

@@ -24,19 +24,19 @@ const ProceduralRobot3D = ({ scale = 1, position = [0, -0.2, 0], interactive = t
     if (headGroupRef.current && interactive) {
       headGroupRef.current.rotation.y = THREE.MathUtils.lerp(
         headGroupRef.current.rotation.y,
-        targetRotation.y * 0.6,
-        0.08
+        targetRotation.y * 0.9,
+        0.15
       );
       headGroupRef.current.rotation.x = THREE.MathUtils.lerp(
         headGroupRef.current.rotation.x,
-        targetRotation.x * 0.4,
-        0.08
+        targetRotation.x * 0.6,
+        0.15
       );
 
       robotGroupRef.current.rotation.y = THREE.MathUtils.lerp(
         robotGroupRef.current.rotation.y,
-        targetRotation.y * 0.25,
-        0.05
+        targetRotation.y * 0.4,
+        0.12
       );
     }
 

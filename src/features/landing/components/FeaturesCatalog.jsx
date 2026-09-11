@@ -100,7 +100,7 @@ export const FeaturesCatalog = () => {
     : features.filter((f) => f.category === selectedCategory);
 
   return (
-    <section id="features" className="py-24 relative overflow-hidden bg-pomify-bg">
+    <section id="features" className="pt-6 pb-16 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
@@ -124,21 +124,13 @@ export const FeaturesCatalog = () => {
               onClick={() => setSelectedCategory(cat.id)}
               className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 ${
                 selectedCategory === cat.id
-                  ? 'bg-pomify-purple text-white shadow-cute-float scale-105'
-                  : 'bg-white/80 text-pomify-navy hover:bg-white border border-purple-100'
+                  ? 'bg-pomify-purple-dark text-white font-extrabold shadow-md scale-105 border-2 border-pomify-purple-dark'
+                  : 'bg-white text-pomify-navy hover:bg-slate-50 border border-slate-200'
               }`}
             >
               {cat.label}
             </button>
           ))}
-        </div>
-
-        {/* Live Emotion Cycle Indicator */}
-        <div className="mb-8 p-4 rounded-3xl bg-white/70 border border-purple-100 max-w-md mx-auto flex items-center justify-between text-xs">
-          <span className="font-semibold text-pomify-navy">Live Robot Emotion State:</span>
-          <span className="font-mono font-bold text-pomify-purple uppercase px-3 py-1 rounded-full bg-purple-100">
-            {emotion}
-          </span>
         </div>
 
         {/* 4-Column Feature Grid */}
