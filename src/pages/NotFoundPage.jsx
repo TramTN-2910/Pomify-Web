@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Home, ShoppingBag, Palette, ArrowLeft, Bot, Sparkles, HelpCircle, Compass } from 'lucide-react';
+import { Home, ShoppingBag, Palette, Bot, Sparkles, Compass } from 'lucide-react';
 import PageContainer from '../components/layout/PageContainer';
 import Button from '../components/ui/Button';
 
@@ -45,10 +45,10 @@ export const NotFoundPage = () => {
 
             {/* Title & Description */}
             <h1 className="text-3xl sm:text-4xl font-extrabold text-pomify-navy tracking-tight mb-3">
-              Ối! Trang này không tồn tại
+              Oops! Page Not Found
             </h1>
             <p className="text-sm sm:text-base text-pomify-subtext leading-relaxed max-w-md">
-              Có vẻ như robot Pomify vừa điều hướng nhầm sang tọa độ vũ trụ khác. Trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển.
+              Looks like Pomify took a wrong turn into an unexplored galaxy. The page you are looking for doesn't exist or has been moved.
             </p>
           </motion.div>
         </div>
@@ -62,17 +62,17 @@ export const NotFoundPage = () => {
         >
           <Link to="/">
             <Button variant="primary" size="lg" icon={Home} className="shadow-lg shadow-purple-500/20">
-              Trở về Trang Chủ
+              Return Home
             </Button>
           </Link>
           <Link to="/shop">
             <Button variant="secondary" size="lg" icon={ShoppingBag}>
-              Ghé Cửa Hàng
+              Visit Store
             </Button>
           </Link>
           <Link to="/customize">
             <Button variant="glass" size="lg" icon={Palette}>
-              Studio 3D
+              3D Studio
             </Button>
           </Link>
         </motion.div>
@@ -86,7 +86,7 @@ export const NotFoundPage = () => {
         >
           <div className="flex items-center gap-2 text-xs font-extrabold text-pomify-navy uppercase tracking-wider mb-4 justify-center sm:justify-start">
             <Compass className="w-4 h-4 text-pomify-purple" />
-            <span>Gợi ý khám phá cho bạn:</span>
+            <span>Quick Exploration Suggestions:</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -94,24 +94,24 @@ export const NotFoundPage = () => {
               to="/robot"
               className="p-3.5 rounded-2xl bg-white/80 border border-purple-100 hover:border-pomify-purple shadow-sm hover:shadow-md transition-all group flex flex-col justify-between"
             >
-              <span className="font-bold text-xs text-pomify-navy group-hover:text-pomify-purple transition-colors">🤖 Chi tiết Robot</span>
-              <span className="text-[11px] text-pomify-subtext mt-1">Cấu trúc phần cứng & OLED Display</span>
+              <span className="font-bold text-xs text-pomify-navy group-hover:text-pomify-purple transition-colors">🤖 Our Robot</span>
+              <span className="text-[11px] text-pomify-subtext mt-1">Hardware & OLED Showcase</span>
             </Link>
 
             <Link
               to="/features"
               className="p-3.5 rounded-2xl bg-white/80 border border-purple-100 hover:border-pomify-purple shadow-sm hover:shadow-md transition-all group flex flex-col justify-between"
             >
-              <span className="font-bold text-xs text-pomify-navy group-hover:text-pomify-purple transition-colors">⚡ Tính Năng Nổi Bật</span>
-              <span className="text-[11px] text-pomify-subtext mt-1">Lịch thông minh, AI Assistant & Voice</span>
+              <span className="font-bold text-xs text-pomify-navy group-hover:text-pomify-purple transition-colors">⚡ Features Suite</span>
+              <span className="text-[11px] text-pomify-subtext mt-1">Smart Reminders & AI Companion</span>
             </Link>
 
             <Link
               to="/about"
               className="p-3.5 rounded-2xl bg-white/80 border border-purple-100 hover:border-pomify-purple shadow-sm hover:shadow-md transition-all group flex flex-col justify-between"
             >
-              <span className="font-bold text-xs text-pomify-navy group-hover:text-pomify-purple transition-colors">✨ Về Pomify</span>
-              <span className="text-[11px] text-pomify-subtext mt-1">Sứ mệnh công nghệ & cảm xúc</span>
+              <span className="font-bold text-xs text-pomify-navy group-hover:text-pomify-purple transition-colors">✨ About Us</span>
+              <span className="text-[11px] text-pomify-subtext mt-1">Mission & Brand Story</span>
             </Link>
           </div>
         </motion.div>
