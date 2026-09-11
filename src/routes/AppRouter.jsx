@@ -15,6 +15,7 @@ import OrderHistoryPage from '../pages/OrderHistoryPage';
 import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
 import ForgotPasswordPage from '../pages/ForgotPasswordPage';
+import NotFoundPage from '../pages/NotFoundPage';
 
 export const AppRouter = () => {
   return (
@@ -35,7 +36,7 @@ export const AppRouter = () => {
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/privacy" element={<PrivacyPolicyPage />} />
       <Route path="/terms" element={<TermsOfServicePage />} />
-      <Route path="*" element={<HomePage />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 };

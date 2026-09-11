@@ -172,16 +172,36 @@ export const Navbar = () => {
             className="lg:hidden glass-nav border-t border-purple-100 px-6 py-6 shadow-xl"
           >
             <div className="flex flex-col gap-3">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.path}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="py-2.5 px-4 rounded-2xl text-sm font-semibold text-pomify-navy hover:bg-pomify-purple/10 hover:text-pomify-purple transition-colors"
-                >
-                  {link.name}
-                </a>
-              ))}
+              {navLinks.map((link) => {
+                const isActive = location.pathname === link.path || (link.path.startsWith('/#') && location.hash === link.path.replace('/', ''));
+                return link.path.startsWith('/#') ? (
+                  <a
+                    key={link.name}
+                    href={link.path}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`py-2.5 px-4 rounded-2xl text-sm font-semibold transition-colors ${
+                      isActive
+                        ? 'bg-pomify-purple/15 text-pomify-purple-dark font-bold'
+                        : 'text-pomify-navy hover:bg-pomify-purple/10 hover:text-pomify-purple'
+                    }`}
+                  >
+                    {link.name}
+                  </a>
+                ) : (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`py-2.5 px-4 rounded-2xl text-sm font-semibold transition-colors ${
+                      isActive
+                        ? 'bg-pomify-purple/15 text-pomify-purple-dark font-bold'
+                        : 'text-pomify-navy hover:bg-pomify-purple/10 hover:text-pomify-purple'
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
               <div className="pt-4 border-t border-purple-100/60 flex flex-col gap-3">
                 <div className="flex items-center gap-3">
                   <Link to="/cart" onClick={() => setMobileMenuOpen(false)} className="flex-1">
