@@ -52,6 +52,26 @@ export const createCustomerOrderApi = async (orderData) => {
       });
       localStorage.setItem('pomify_local_notifications', JSON.stringify(localNotifs));
       window.dispatchEvent(new Event('pomify_new_order'));
+
+      // Deduct stock from local storage inventory cache
+      const localInv = JSON.parse(localStorage.getItem('pomify_local_inventory') || '[]');
+      if (Array.isArray(localInv) && localInv.length > 0) {
+        orderData.items.forEach((it) => {
+          const qty = Number(it.quantity || 1);
+          const idx = localInv.findIndex((p) =>
+            p._id === it.productId ||
+            p.sku === it.productId ||
+            (it.name && p.name.toLowerCase().includes(it.name.toLowerCase()))
+          );
+          if (idx !== -1) {
+            const newStock = Math.max(0, Number(localInv[idx].stock || 0) - qty);
+            localInv[idx].stock = newStock;
+            if (newStock <= 0) localInv[idx].status = 'Out of Stock';
+            else if (newStock <= (localInv[idx].lowStockThreshold || 5)) localInv[idx].status = 'Low Stock';
+          }
+        });
+        localStorage.setItem('pomify_local_inventory', JSON.stringify(localInv));
+      }
     } catch (e) {
       // Storage warning
     }
@@ -95,7 +115,6 @@ export const createCustomerOrderApi = async (orderData) => {
       window.dispatchEvent(new Event('pomify_new_order'));
     } catch (e) {}
 
-
     return {
       success: true,
       message: 'Order created locally',
@@ -103,6 +122,7 @@ export const createCustomerOrderApi = async (orderData) => {
     };
   }
 };
+
 
 
 
