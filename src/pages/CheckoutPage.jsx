@@ -76,18 +76,24 @@ export const CheckoutPage = () => {
       notes: formData.notes || '',
     };
 
+    let createdRes = null;
     try {
-      await createCustomerOrderApi(orderPayload);
+      createdRes = await createCustomerOrderApi(orderPayload);
     } catch (e) {
       console.warn('API submission fallback');
     }
 
+    const assignedCode = createdRes?.data?.orderCode || `POM-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+
     addOrder({
+      id: assignedCode,
+      orderCode: assignedCode,
       total: total,
       paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery (COD)' : paymentMethod === 'qr' ? 'VietQR Bank Transfer' : 'Credit Card',
       shippingInfo: formData,
       items: [...cartItems],
     });
+
 
     clearCart();
     setIsSubmitting(false);

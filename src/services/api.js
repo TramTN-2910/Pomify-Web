@@ -17,19 +17,65 @@ export const createCustomerOrderApi = async (orderData) => {
       body: JSON.stringify(orderData),
     });
     const data = await res.json();
+
+    // Cache locally for Admin fallback storage
+    try {
+      const localAdminOrders = JSON.parse(localStorage.getItem('pomify_local_orders') || '[]');
+      const newLocal = {
+        _id: data.data?._id || `ord-${Date.now()}`,
+        orderCode: data.data?.orderCode || `POM-2026-${Math.floor(1000 + Math.random() * 9000)}`,
+        customerName: orderData.customerName,
+        customerEmail: orderData.customerEmail,
+        customerPhone: orderData.customerPhone,
+        shippingAddress: orderData.shippingAddress,
+        items: orderData.items,
+        totalAmount: orderData.totalAmount,
+        paymentMethod: orderData.paymentMethod,
+        paymentStatus: orderData.paymentMethod === 'VietQR' || orderData.paymentMethod === 'Credit Card' ? 'Paid' : 'Pending',
+        status: 'Pending',
+        cancellationReason: '',
+        createdAt: new Date().toISOString(),
+      };
+      localAdminOrders.unshift(newLocal);
+      localStorage.setItem('pomify_local_orders', JSON.stringify(localAdminOrders));
+    } catch (e) {
+      // Storage warning
+    }
+
     return data;
   } catch (error) {
     console.warn('[API Warning] Submit order fallback');
+    const fallbackCode = `POM-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const fallbackObj = {
+      _id: `ord-${Date.now()}`,
+      orderCode: fallbackCode,
+      customerName: orderData.customerName,
+      customerEmail: orderData.customerEmail,
+      customerPhone: orderData.customerPhone,
+      shippingAddress: orderData.shippingAddress,
+      items: orderData.items,
+      totalAmount: orderData.totalAmount,
+      paymentMethod: orderData.paymentMethod,
+      paymentStatus: 'Pending',
+      status: 'Pending',
+      cancellationReason: '',
+      createdAt: new Date().toISOString(),
+    };
+
+    try {
+      const localAdminOrders = JSON.parse(localStorage.getItem('pomify_local_orders') || '[]');
+      localAdminOrders.unshift(fallbackObj);
+      localStorage.setItem('pomify_local_orders', JSON.stringify(localAdminOrders));
+    } catch (e) {}
+
     return {
       success: true,
       message: 'Order created locally',
-      data: {
-        orderCode: `POM-2026-${Math.floor(1000 + Math.random() * 9000)}`,
-        ...orderData,
-      },
+      data: fallbackObj,
     };
   }
 };
+
 
 // Admin Login API
 export const adminLoginApi = async (email, password) => {
