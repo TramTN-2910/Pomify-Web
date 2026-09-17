@@ -263,24 +263,83 @@ export const getAdminInventoryApi = async (category = 'All', status = 'All', sea
     });
     if (!res.ok) throw new Error(`HTTP error ${res.status}`);
     const data = await res.json();
+    if (data.data && Array.isArray(data.data) && data.data.length > 0) {
+      try {
+        localStorage.setItem('pomify_local_inventory', JSON.stringify(data.data));
+      } catch (e) {}
+    }
     return data.data;
   } catch (error) {
     console.warn('[API Warning] Inventory API fallback');
-    const localInv = JSON.parse(localStorage.getItem('pomify_local_inventory') || 'null') || [
+    const defaultProducts = [
       {
         _id: 'prod-1',
-        name: 'Pomify Bot — Companion Edition',
-        sku: 'POM-BOT-01',
+        name: 'Pomify Bot — Standard Edition',
+        sku: 'POM-BOT-STD',
         category: 'Robots',
-        price: 3490000,
+        price: 7475000,
         stock: 45,
         lowStockThreshold: 10,
         status: 'In Stock',
-        badge: 'Best Seller',
+        badge: 'None',
         image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500',
         variants: [],
       },
+      {
+        _id: 'prod-2',
+        name: 'Pomify Bot — Creator Kit Bundle',
+        sku: 'POM-BOT-CREATOR',
+        category: 'Robots',
+        price: 8725000,
+        stock: 25,
+        lowStockThreshold: 5,
+        status: 'In Stock',
+        badge: 'Popular',
+        image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500',
+        variants: [],
+      },
+      {
+        _id: 'prod-3',
+        name: 'Pomify Bot — Pro Companion Suite',
+        sku: 'POM-BOT-PRO',
+        category: 'Robots',
+        price: 9975000,
+        stock: 0,
+        lowStockThreshold: 5,
+        status: 'Out of Stock',
+        badge: 'Sold Out',
+        image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500',
+        variants: [],
+      },
+      {
+        _id: 'prod-4',
+        name: 'Pomify Wireless Charging Dock',
+        sku: 'POM-ACC-DOCK',
+        category: 'Accessories',
+        price: 590000,
+        stock: 3,
+        lowStockThreshold: 5,
+        status: 'Low Stock',
+        badge: 'Low Stock',
+        image: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=500',
+        variants: [],
+      },
+      {
+        _id: 'prod-5',
+        name: 'Pomify Smart Silicone Case & Ears Set',
+        sku: 'POM-ACC-CASE',
+        category: 'Accessories',
+        price: 290000,
+        stock: 80,
+        lowStockThreshold: 15,
+        status: 'In Stock',
+        badge: 'None',
+        image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500',
+        variants: [],
+      },
     ];
+
+    const localInv = JSON.parse(localStorage.getItem('pomify_local_inventory') || 'null') || defaultProducts;
 
     return localInv.filter((p) => {
       const matchCat = !category || category === 'All' || p.category === category;
@@ -293,6 +352,7 @@ export const getAdminInventoryApi = async (category = 'All', status = 'All', sea
     });
   }
 };
+
 
 export const createProductApi = async (productData) => {
   try {
