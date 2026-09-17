@@ -9,8 +9,8 @@ export const AdminSidebar = () => {
 
   const menuItems = [
     { label: 'Sales Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
-    { label: 'Quản lý Đơn hàng', path: '/admin/orders', icon: ShoppingBag },
-    { label: 'Quản lý Tồn kho', path: '/admin/inventory', icon: Boxes },
+    { label: 'Order Management', path: '/admin/orders', icon: ShoppingBag },
+    { label: 'Inventory Control', path: '/admin/inventory', icon: Boxes },
   ];
 
   const handleLogout = () => {
@@ -20,7 +20,7 @@ export const AdminSidebar = () => {
   };
 
   return (
-    <aside className="w-64 bg-slate-900/95 text-slate-100 flex flex-col justify-between p-4 border-r border-slate-800 shadow-2xl min-h-screen select-none">
+    <aside className="w-64 bg-slate-900 dark:bg-slate-900 text-slate-100 flex flex-col justify-between p-4 border-r border-slate-800 dark:border-slate-800 shadow-2xl min-h-screen select-none shrink-0 transition-colors">
       <div>
         {/* Brand Logo Header */}
         <div className="flex items-center gap-3 px-3 py-4 mb-6 border-b border-slate-800">
@@ -69,7 +69,7 @@ export const AdminSidebar = () => {
           className="flex items-center justify-between text-xs text-purple-300 hover:text-purple-200 bg-purple-950/40 hover:bg-purple-900/50 px-3 py-2.5 rounded-xl border border-purple-800/40 transition-colors"
         >
           <span className="flex items-center gap-2">
-            <Sparkles className="w-3.5 h-3.5 text-purple-400" /> Về trang Khách Hàng
+            <Sparkles className="w-3.5 h-3.5 text-purple-400" /> Customer Storefront
           </span>
           <ExternalLink className="w-3.5 h-3.5 opacity-70" />
         </Link>
@@ -88,7 +88,7 @@ export const AdminSidebar = () => {
           </div>
           <button
             onClick={handleLogout}
-            title="Đăng xuất"
+            title="Sign Out"
             className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-950/50 rounded-lg transition-colors"
           >
             <LogOut className="w-4 h-4" />

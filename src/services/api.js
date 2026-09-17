@@ -1,6 +1,5 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/v1';
 
-// Helper to get auth headers
 const getAuthHeaders = () => {
   const token = localStorage.getItem('pomify_admin_token');
   return {
@@ -9,7 +8,7 @@ const getAuthHeaders = () => {
   };
 };
 
-// Admin Login
+// Admin Login API
 export const adminLoginApi = async (email, password) => {
   try {
     const res = await fetch(`${API_BASE_URL}/auth/admin-login`, {
@@ -42,7 +41,7 @@ export const adminLoginApi = async (email, password) => {
   }
 };
 
-// Get Dashboard Stats
+// Dashboard Stats API
 export const getDashboardStatsApi = async () => {
   try {
     const res = await fetch(`${API_BASE_URL}/admin/dashboard/stats`, {
@@ -61,10 +60,10 @@ export const getDashboardStatsApi = async () => {
         lowStockCount: 2,
       },
       recentOrders: [
-        { _id: 'ord-8801', orderCode: 'POM-2026-8801', customerName: 'Nguyễn Văn An', totalAmount: 3490000, status: 'Shipping', createdAt: new Date() },
-        { _id: 'ord-8802', orderCode: 'POM-2026-8802', customerName: 'Trần Thị Minh', totalAmount: 4080000, status: 'Processing', createdAt: new Date(Date.now() - 3600000) },
-        { _id: 'ord-8803', orderCode: 'POM-2026-8803', customerName: 'Lê Hoàng Nam', totalAmount: 580000, status: 'Delivered', createdAt: new Date(Date.now() - 86400000) },
-        { _id: 'ord-8804', orderCode: 'POM-2026-8804', customerName: 'Phạm Thu Thảo', totalAmount: 3490000, status: 'Pending', createdAt: new Date(Date.now() - 172800000) },
+        { _id: 'ord-8801', orderCode: 'POM-2026-8801', customerName: 'Nguyen Van An', totalAmount: 3490000, status: 'Shipping', createdAt: new Date() },
+        { _id: 'ord-8802', orderCode: 'POM-2026-8802', customerName: 'Tran Thi Minh', totalAmount: 4080000, status: 'Processing', createdAt: new Date(Date.now() - 3600000) },
+        { _id: 'ord-8803', orderCode: 'POM-2026-8803', customerName: 'Le Hoang Nam', totalAmount: 580000, status: 'Delivered', createdAt: new Date(Date.now() - 86400000) },
+        { _id: 'ord-8804', orderCode: 'POM-2026-8804', customerName: 'Pham Thu Thao', totalAmount: 3490000, status: 'Pending', createdAt: new Date(Date.now() - 172800000) },
       ],
       topProducts: [
         { name: 'Pomify Bot — Companion Edition', sku: 'POM-BOT-01', sold: 34, stock: 45, revenue: 118660000 },
@@ -72,18 +71,18 @@ export const getDashboardStatsApi = async () => {
         { name: 'Pomify Smart Silicone Case & Ears Set', sku: 'POM-ACC-CASE', sold: 52, stock: 80, revenue: 15080000 },
       ],
       salesTrend: [
-        { month: 'T4', revenue: 42000000, orders: 12 },
-        { month: 'T5', revenue: 68000000, orders: 19 },
-        { month: 'T6', revenue: 85000000, orders: 24 },
-        { month: 'T7', revenue: 110000000, orders: 31 },
-        { month: 'T8', revenue: 135000000, orders: 39 },
-        { month: 'T9', revenue: 168000000, orders: 48 },
+        { month: 'Apr', revenue: 42000000, orders: 12 },
+        { month: 'May', revenue: 68000000, orders: 19 },
+        { month: 'Jun', revenue: 85000000, orders: 24 },
+        { month: 'Jul', revenue: 110000000, orders: 31 },
+        { month: 'Aug', revenue: 135000000, orders: 39 },
+        { month: 'Sep', revenue: 168000000, orders: 48 },
       ],
     };
   }
 };
 
-// Get Admin Orders
+// Admin Orders API
 export const getAdminOrdersApi = async (status = 'All', search = '') => {
   try {
     const params = new URLSearchParams();
@@ -102,64 +101,68 @@ export const getAdminOrdersApi = async (status = 'All', search = '') => {
       {
         _id: 'ord-8801',
         orderCode: 'POM-2026-8801',
-        customerName: 'Nguyễn Văn An',
+        customerName: 'Nguyen Van An',
         customerEmail: 'an.nguyen@example.com',
         customerPhone: '0901234567',
-        shippingAddress: '123 Nguyễn Huệ, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh',
-        items: [{ productId: 'p1', name: 'Pomify Bot — Companion Edition', price: 3490000, quantity: 1, customization: { color: 'Lavender Violet', accessory: 'Cat Ears' } }],
+        shippingAddress: '123 Nguyen Hue St, District 1, Ho Chi Minh City',
+        items: [{ productId: 'prod-1', name: 'Pomify Bot — Companion Edition', price: 3490000, quantity: 1, customization: { color: 'Lavender Violet', accessory: 'Cat Ears' } }],
         totalAmount: 3490000,
         paymentMethod: 'VietQR',
         paymentStatus: 'Paid',
         status: 'Shipping',
-        notes: 'Giao giờ hành chính, gọi trước 15 phút.',
+        cancellationReason: '',
+        notes: 'Deliver during office hours, call 15 minutes before arrival.',
         createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
       },
       {
         _id: 'ord-8802',
         orderCode: 'POM-2026-8802',
-        customerName: 'Trần Thị Minh',
+        customerName: 'Tran Thi Minh',
         customerEmail: 'minh.tran@example.com',
         customerPhone: '0987654321',
-        shippingAddress: '456 Lê Lợi, Phường Bến Thành, Quận 1, TP. Hồ Chí Minh',
+        shippingAddress: '456 Le Loi St, District 1, Ho Chi Minh City',
         items: [
-          { productId: 'p1', name: 'Pomify Bot — Companion Edition', price: 3490000, quantity: 1, customization: { color: 'Sky Blue', accessory: 'Halo Ring' } },
-          { productId: 'p2', name: 'Pomify Wireless Charging Dock', price: 590000, quantity: 1 },
+          { productId: 'prod-1', name: 'Pomify Bot — Companion Edition', price: 3490000, quantity: 1, customization: { color: 'Sky Blue', accessory: 'Halo Ring' } },
+          { productId: 'prod-2', name: 'Pomify Wireless Charging Dock', price: 590000, quantity: 1 },
         ],
         totalAmount: 4080000,
         paymentMethod: 'COD',
         paymentStatus: 'Pending',
         status: 'Processing',
+        cancellationReason: '',
         notes: '',
         createdAt: new Date(Date.now() - 3600000 * 5).toISOString(),
       },
       {
         _id: 'ord-8803',
         orderCode: 'POM-2026-8803',
-        customerName: 'Lê Hoàng Nam',
+        customerName: 'Le Hoang Nam',
         customerEmail: 'nam.le@example.com',
         customerPhone: '0912345678',
-        shippingAddress: '789 Điện Biên Phủ, Quận Bình Thạnh, TP. Hồ Chí Minh',
-        items: [{ productId: 'p3', name: 'Pomify Smart Silicone Case & Ears Set', price: 290000, quantity: 2 }],
+        shippingAddress: '789 Dien Bien Phu St, Binh Thanh District, Ho Chi Minh City',
+        items: [{ productId: 'prod-3', name: 'Pomify Smart Silicone Case & Ears Set', price: 290000, quantity: 2 }],
         totalAmount: 580000,
         paymentMethod: 'VietQR',
         paymentStatus: 'Paid',
         status: 'Delivered',
-        notes: 'Đã nhận hàng thành công',
+        cancellationReason: '',
+        notes: 'Delivered successfully.',
         createdAt: new Date(Date.now() - 86400000).toISOString(),
       },
       {
         _id: 'ord-8804',
         orderCode: 'POM-2026-8804',
-        customerName: 'Phạm Thu Thảo',
+        customerName: 'Pham Thu Thao',
         customerEmail: 'thao.pham@example.com',
         customerPhone: '0933445566',
-        shippingAddress: '12 Cách Mạng Tháng 8, Quận 3, TP. Hồ Chí Minh',
-        items: [{ productId: 'p1', name: 'Pomify Bot — Companion Edition', price: 3490000, quantity: 1, customization: { color: 'Sakura Pink', accessory: 'Crown' } }],
+        shippingAddress: '12 Cach Mang Thang 8 St, District 3, Ho Chi Minh City',
+        items: [{ productId: 'prod-1', name: 'Pomify Bot — Companion Edition', price: 3490000, quantity: 1, customization: { color: 'Sakura Pink', accessory: 'Crown' } }],
         totalAmount: 3490000,
         paymentMethod: 'Credit Card',
         paymentStatus: 'Paid',
         status: 'Pending',
-        notes: 'Gói quà sinh nhật.',
+        cancellationReason: '',
+        notes: 'Birthday gift wrapping requested.',
         createdAt: new Date(Date.now() - 172800000).toISOString(),
       },
     ];
@@ -176,15 +179,14 @@ export const getAdminOrdersApi = async (status = 'All', search = '') => {
   }
 };
 
-// Update Order Status
-export const updateOrderStatusApi = async (id, status, paymentStatus) => {
+// Update Order Status API with cancellation reason
+export const updateOrderStatusApi = async (id, status, paymentStatus, cancellationReason = '') => {
   try {
     const res = await fetch(`${API_BASE_URL}/admin/orders/${id}/status`, {
       method: 'PUT',
       headers: getAuthHeaders(),
-      body: JSON.stringify({ status, paymentStatus }),
+      body: JSON.stringify({ status, paymentStatus, cancellationReason }),
     });
-    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
     const data = await res.json();
     return data;
   } catch (error) {
@@ -194,6 +196,7 @@ export const updateOrderStatusApi = async (id, status, paymentStatus) => {
     if (idx !== -1) {
       if (status) orders[idx].status = status;
       if (paymentStatus) orders[idx].paymentStatus = paymentStatus;
+      if (cancellationReason) orders[idx].cancellationReason = cancellationReason;
       localStorage.setItem('pomify_local_orders', JSON.stringify(orders));
       return { success: true, message: 'Status updated locally', data: orders[idx] };
     }
@@ -201,7 +204,7 @@ export const updateOrderStatusApi = async (id, status, paymentStatus) => {
   }
 };
 
-// Get Admin Inventory
+// Admin Inventory API
 export const getAdminInventoryApi = async (category = 'All', status = 'All', search = '') => {
   try {
     const params = new URLSearchParams();
@@ -284,7 +287,7 @@ export const getAdminInventoryApi = async (category = 'All', status = 'All', sea
   }
 };
 
-// Update Inventory Stock
+// Update Inventory Stock API
 export const updateInventoryItemApi = async (id, stock, price, lowStockThreshold) => {
   try {
     const res = await fetch(`${API_BASE_URL}/admin/inventory/${id}`, {
@@ -314,5 +317,65 @@ export const updateInventoryItemApi = async (id, stock, price, lowStockThreshold
       return { success: true, message: 'Stock updated locally', data: inv[idx] };
     }
     return { success: false, message: 'Item not found' };
+  }
+};
+
+// Notifications APIs
+export const getAdminNotificationsApi = async () => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/admin/notifications`, {
+      headers: getAuthHeaders(),
+    });
+    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.warn('[API Warning] Notifications API fallback');
+    return {
+      success: true,
+      unreadCount: 2,
+      data: [
+        {
+          _id: 'n1',
+          title: 'New Order Placed',
+          message: 'Order POM-2026-8804 placed by Pham Thu Thao (3,490,000 ₫).',
+          type: 'order',
+          isRead: false,
+          link: '/admin/orders',
+          createdAt: new Date(Date.now() - 300000).toISOString(),
+        },
+        {
+          _id: 'n2',
+          title: 'Low Stock Alert ⚠️',
+          message: 'Pomify Wireless Charging Dock stock is down to 3 units.',
+          type: 'stock',
+          isRead: false,
+          link: '/admin/inventory',
+          createdAt: new Date(Date.now() - 7200000).toISOString(),
+        },
+        {
+          _id: 'n3',
+          title: 'Order Status Update',
+          message: 'Order POM-2026-8801 status changed to Shipping.',
+          type: 'order',
+          isRead: true,
+          link: '/admin/orders',
+          createdAt: new Date(Date.now() - 21600000).toISOString(),
+        },
+      ],
+    };
+  }
+};
+
+export const markNotificationsReadApi = async () => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/admin/notifications/read`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    return { success: true, message: 'Notifications marked read locally' };
   }
 };

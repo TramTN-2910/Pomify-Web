@@ -75,10 +75,17 @@ The **Pomify Website** leverages modern React libraries and WebGL graphics for i
 * **Order History (`/orders`)**: Customer dashboard tracking order shipping status (`Processing` 🚚 -> `Shipping` 📦 -> `Delivered` 🎉).
 
 ### 3.7. Admin Management Portal (`/admin/login`, `/admin/dashboard`, `/admin/orders`, `/admin/inventory`)
-* **Admin Login (`/admin/login`)**: Secure JWT authentication portal for store administrators.
-* **Sales Dashboard (`/admin/dashboard`)**: Analytics dashboard showcasing total revenue, total order count, pending orders, low stock alerts, revenue charts, top-selling products, and recent order feeds.
-* **Admin Order Management (`/admin/orders`)**: Comprehensive order management console with status filtering (`Pending`, `Processing`, `Shipping`, `Delivered`, `Cancelled`), detailed order drawer, and real-time status update capabilities.
-* **Inventory & Stock Management (`/admin/inventory`)**: Centralized warehouse inventory control system tracking product stock levels, customizable variant stock counts, reorder thresholds, low stock badges (`In Stock`, `Low Stock`, `Out of Stock`), and instant stock adjustments.
+* **Theme Synchronization & Dark/Light Mode**: Shared brand color palette (Pastel Purple `#A78BFA`, Soft Glassmorphism, Rounded 24px) with instant Light Mode / Dark Mode toggle saved in `localStorage`.
+* **Exclusion of AI Companion Chatbot**: AI Chatbot launcher widget (`FloatingChatBox`) is automatically hidden on all Admin portal routes.
+* **Admin Authentication (`/admin/login`)**: Secure JWT authentication console with full English language interface.
+* **Sales Dashboard (`/admin/dashboard`)**: Analytics dashboard displaying Total Revenue, Total Orders, Pending Orders count, Low Stock Alerts, interactive revenue growth bar chart, top-selling products, and live order feed.
+* **Admin Order Management (`/admin/orders`)**: 
+  - Status filtering (`Pending`, `Processing`, `Shipping`, `Delivered`, `Cancelled`).
+  - **Strict Order Workflow Rules**: Irreversible status transitions once an order reaches `Cancelled` or `Delivered`.
+  - **Cancellation Business Logic**: Requires selecting a **Cancellation Reason** (`Out of Stock`, `Customer Request`, `Payment Failed`, `Invalid Address`, `Other`).
+  - **Automatic Stock Restoration**: When an order is `Cancelled`, item quantities are automatically restored back to warehouse inventory.
+* **Inventory & Warehouse Management (`/admin/inventory`)**: Stock level tracking, variant stock counts, reorder thresholds, visual stock status badges (`In Stock` 🟢, `Low Stock` 🟡, `Out of Stock` 🔴), and inline stock quantity / pricing editor.
+* **Notification Center**: Live Notification Bell dropdown fetching system alerts (`New Order Placed`, `Order Cancelled`, `Low Stock Warning`) via backend API with unread counter and mark-as-read controls.
 
 ---
 
@@ -100,7 +107,7 @@ VITE_EMAIL_SERVICE_PASS=zcxdwjjmwkdskujd
 
 ## ⚙️ 5. Backend Architecture & API Specification
 
-The **Pomify Backend Service** operates independently to power e-commerce operations, order tracking, and inventory control.
+The **Pomify Backend Service** operates independently to power e-commerce operations, order tracking, notification feeds, and inventory control.
 
 ### 5.1. Tech Stack
 * **Runtime & Framework:** Node.js (ESM) + Express.js
@@ -112,7 +119,10 @@ The **Pomify Backend Service** operates independently to power e-commerce operat
 * `POST /api/v1/auth/admin-login` — Admin authentication & JWT token generation
 * `GET /api/v1/admin/dashboard/stats` — Sales analytics & stock alerts
 * `GET /api/v1/admin/orders` — List & filter customer orders
-* `PUT /api/v1/admin/orders/:id/status` — Update order fulfillment status
+* `PUT /api/v1/admin/orders/:id/status` — Update order status, record cancellation reason, auto-restock inventory
 * `GET /api/v1/admin/inventory` — Retrieve inventory items & stock levels
 * `PUT /api/v1/admin/inventory/:id` — Update stock quantities & reorder thresholds
+* `GET /api/v1/admin/notifications` — Fetch real-time system notifications
+* `PUT /api/v1/admin/notifications/read` — Mark notifications as read
+
 
