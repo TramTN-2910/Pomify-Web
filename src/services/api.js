@@ -51,6 +51,7 @@ export const createCustomerOrderApi = async (orderData) => {
         createdAt: new Date().toISOString(),
       });
       localStorage.setItem('pomify_local_notifications', JSON.stringify(localNotifs));
+      window.dispatchEvent(new Event('pomify_new_order'));
     } catch (e) {
       // Storage warning
     }
@@ -91,7 +92,9 @@ export const createCustomerOrderApi = async (orderData) => {
         createdAt: new Date().toISOString(),
       });
       localStorage.setItem('pomify_local_notifications', JSON.stringify(localNotifs));
+      window.dispatchEvent(new Event('pomify_new_order'));
     } catch (e) {}
+
 
     return {
       success: true,

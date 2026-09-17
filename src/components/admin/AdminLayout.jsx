@@ -30,8 +30,22 @@ export const AdminLayout = ({ children, title = 'Dashboard' }) => {
 
   useEffect(() => {
     fetchNotifs();
-    const interval = setInterval(fetchNotifs, 3000);
-    return () => clearInterval(interval);
+    const interval = setInterval(fetchNotifs, 2000);
+
+    const handleSync = (e) => {
+      if (!e || e.key === 'pomify_local_notifications' || e.key === 'pomify_local_orders' || e.type === 'pomify_new_order') {
+        fetchNotifs();
+      }
+    };
+
+    window.addEventListener('storage', handleSync);
+    window.addEventListener('pomify_new_order', handleSync);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('storage', handleSync);
+      window.removeEventListener('pomify_new_order', handleSync);
+    };
   }, []);
 
 
@@ -152,16 +166,17 @@ export const AdminLayout = ({ children, title = 'Dashboard' }) => {
                             {notif.type === 'stock' ? <AlertCircle className="w-4 h-4 text-amber-400" /> : <ShoppingBag className="w-4 h-4 text-purple-400" />}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h5 className="text-xs font-bold text-slate-200 dark:text-slate-100 flex items-center justify-between">
+                            <h5 className={`text-xs font-bold flex items-center justify-between ${theme === 'dark' ? 'text-slate-100' : 'text-slate-900'}`}>
                               {notif.title}
-                              <span className="text-[10px] font-normal text-slate-400">
+                              <span className={`text-[10px] font-normal ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
                                 {new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                               </span>
                             </h5>
-                            <p className="text-[11px] text-slate-400 dark:text-slate-300 mt-0.5 leading-snug">
+                            <p className={`text-[11px] mt-0.5 leading-snug font-medium ${theme === 'dark' ? 'text-slate-300' : 'text-slate-700'}`}>
                               {notif.message}
                             </p>
                           </div>
+
                         </div>
                       ))
                     )}
