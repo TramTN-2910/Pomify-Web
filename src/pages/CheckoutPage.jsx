@@ -355,60 +355,25 @@ export const CheckoutPage = () => {
           </form>
         )}
 
-        {/* VietQR Bank Transfer Modal */}
+        {/* VietQR Payment Transfer Modal */}
         {showQRModal && (
           <div className="fixed inset-0 z-50 bg-pomify-navy/60 backdrop-blur-md flex items-center justify-center p-4">
-            <div className="bg-white rounded-4xl p-6 max-w-md w-full text-center space-y-4 shadow-2xl animate-scale-up">
-              <div className="flex items-center justify-between border-b border-purple-100 pb-3">
-                <h3 className="font-extrabold text-lg text-pomify-navy">VietQR Payment Transfer</h3>
-                <button onClick={() => setShowQRModal(false)} className="text-slate-400 hover:text-slate-600 text-xl font-bold">×</button>
+            <div className="bg-white rounded-3xl p-5 max-w-sm w-full text-center space-y-3 shadow-2xl animate-scale-up">
+              <div className="flex items-center justify-between border-b border-purple-100 pb-2">
+                <h3 className="font-extrabold text-base text-pomify-navy">VietQR Payment Transfer</h3>
+                <button onClick={() => setShowQRModal(false)} className="text-slate-400 hover:text-slate-600 text-lg font-bold">×</button>
               </div>
 
-              {/* QR Mode Tabs */}
-              <div className="flex bg-purple-50 p-1 rounded-2xl border border-purple-100 text-xs font-bold">
-                <button
-                  onClick={() => setQrTab('dynamic')}
-                  className={`flex-1 py-1.5 rounded-xl transition-all ${
-                    qrTab === 'dynamic' ? 'bg-pomify-purple text-white shadow-sm' : 'text-pomify-subtext hover:text-pomify-navy'
-                  }`}
-                >
-                  ⚡ Dynamic Auto QR
-                </button>
-                <button
-                  onClick={() => setQrTab('static')}
-                  className={`flex-1 py-1.5 rounded-xl transition-all ${
-                    qrTab === 'static' ? 'bg-pomify-purple text-white shadow-sm' : 'text-pomify-subtext hover:text-pomify-navy'
-                  }`}
-                >
-                  🖼️ Bank Account Image
-                </button>
-              </div>
+              <div className="p-3 rounded-2xl bg-purple-50/80 border border-purple-100 space-y-2">
+                <div className="bg-white p-2 rounded-xl border border-purple-200 inline-block shadow-inner">
+                  <img
+                    src={`https://img.vietqr.io/image/VCB-1031873856-compact2.png?amount=${Math.round(total * 25000)}&addInfo=POMIFY%20STORE&accountName=TRAN%20NGOC%20TRAM`}
+                    alt="VietQR Code"
+                    className="w-44 h-auto mx-auto rounded-lg"
+                  />
+                </div>
 
-              <div className="p-4 rounded-3xl bg-purple-50/80 border border-purple-100 space-y-3">
-                {qrTab === 'dynamic' ? (
-                  <>
-                    <div className="bg-white p-2.5 rounded-2xl border border-purple-200 inline-block shadow-inner">
-                      <img
-                        src={`https://img.vietqr.io/image/VCB-1031873856-compact2.png?amount=${Math.round(total * 25000)}&addInfo=POMIFY%20STORE&accountName=TRAN%20NGOC%20TRAM`}
-                        alt="Dynamic VietQR Code"
-                        className="w-56 h-auto mx-auto rounded-xl"
-                      />
-                    </div>
-                    <p className="text-[11px] text-emerald-600 font-bold bg-emerald-50 py-1 px-3 rounded-full inline-block border border-emerald-100">
-                      ✓ Auto-fills exact amount & memo in banking app
-                    </p>
-                  </>
-                ) : (
-                  <div className="bg-white p-2.5 rounded-2xl border border-purple-200 inline-block shadow-inner">
-                    <img
-                      src={staticQRCodeImg}
-                      alt="VietQR Account Code"
-                      className="w-56 h-auto mx-auto rounded-xl object-contain"
-                    />
-                  </div>
-                )}
-
-                <div className="text-xs text-left space-y-1.5 text-pomify-navy font-medium bg-white p-3 rounded-2xl border border-purple-100">
+                <div className="text-xs text-left space-y-1 text-pomify-navy font-medium bg-white p-2.5 rounded-xl border border-purple-100">
                   <div className="flex justify-between">
                     <span className="text-pomify-subtext">Account Name:</span>
                     <strong className="text-purple-700 font-bold">TRAN NGOC TRAM</strong>
@@ -431,7 +396,7 @@ export const CheckoutPage = () => {
               <Button
                 variant="primary"
                 size="md"
-                className="w-full shadow-cute-float"
+                className="w-full shadow-cute-float text-xs py-2.5"
                 onClick={processOrder}
               >
                 I Have Completed Transfer
