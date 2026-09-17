@@ -30,9 +30,10 @@ export const AdminLayout = ({ children, title = 'Dashboard' }) => {
 
   useEffect(() => {
     fetchNotifs();
-    const interval = setInterval(fetchNotifs, 15000);
+    const interval = setInterval(fetchNotifs, 3000);
     return () => clearInterval(interval);
   }, []);
+
 
   const handleMarkAllRead = async () => {
     await markNotificationsReadApi();

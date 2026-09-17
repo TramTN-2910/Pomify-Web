@@ -1,11 +1,16 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, Sparkles, ShoppingBag, ShieldCheck, Heart, RefreshCw } from 'lucide-react';
+import { CheckCircle2, Sparkles, ShoppingBag, ShieldCheck, Heart, RefreshCw, Zap } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import useCustomizerStore, { BASE_PRICE } from '../store/customizerStore';
 import useRobotStore from '../../robot-companion/store/robotStore';
+import useCartStore from '../../shop/store/cartStore';
 import Button from '../../../components/ui/Button';
 
 export const LiveSpecPreview = ({ onSaveTrigger }) => {
+  const navigate = useNavigate();
+  const { addToCart } = useCartStore();
+
   const {
     color,
     finish,
@@ -27,6 +32,30 @@ export const LiveSpecPreview = ({ onSaveTrigger }) => {
     setBubbleText("Yep. That's me! 💙", true);
     triggerReaction('happy');
     if (onSaveTrigger) onSaveTrigger();
+  };
+
+  const handleOrderCustomBuild = () => {
+    saveDesign();
+    setBubbleText("Yay! Order placed for my custom build! 🚚", true);
+    triggerReaction('happy');
+
+    const primaryAcc = accessories.length > 0 ? accessories.map((a) => a.name).join(', ') : 'Cat Ears';
+
+    addToCart({
+      id: `custom-${Date.now()}`,
+      name: `Pomify Bot — ${robotName}`,
+      edition: `${color.name} Custom Build`,
+      price: totalPrice,
+      quantity: 1,
+      image: '🤖',
+      customization: {
+        color: color.name,
+        accessory: primaryAcc,
+        expression: expression.name,
+      },
+    });
+
+    navigate('/checkout');
   };
 
   return (
@@ -107,7 +136,7 @@ export const LiveSpecPreview = ({ onSaveTrigger }) => {
 
       </div>
 
-      {/* Pricing Footer & Action */}
+      {/* Pricing Footer & Actions */}
       <div className="pt-4 mt-2 border-t border-purple-100 space-y-3">
         <div className="flex items-baseline justify-between">
           <div>
@@ -119,16 +148,28 @@ export const LiveSpecPreview = ({ onSaveTrigger }) => {
           </div>
         </div>
 
-        {/* Action Button */}
-        <Button
-          variant={isSaved ? 'pink' : 'primary'}
-          size="lg"
-          className="w-full shadow-cute-float"
-          icon={isSaved ? CheckCircle2 : Sparkles}
-          onClick={handleSave}
-        >
-          {isSaved ? 'Design Saved!' : 'Save Design'}
-        </Button>
+        {/* Action Buttons: Order Custom & Save */}
+        <div className="space-y-2">
+          <Button
+            variant="pink"
+            size="lg"
+            className="w-full shadow-cute-float"
+            icon={Zap}
+            onClick={handleOrderCustomBuild}
+          >
+            Order Custom Build — ${totalPrice}
+          </Button>
+
+          <Button
+            variant={isSaved ? 'secondary' : 'primary'}
+            size="md"
+            className="w-full"
+            icon={isSaved ? CheckCircle2 : Sparkles}
+            onClick={handleSave}
+          >
+            {isSaved ? 'Design Saved!' : 'Save Design Only'}
+          </Button>
+        </div>
       </div>
 
     </div>
@@ -136,3 +177,4 @@ export const LiveSpecPreview = ({ onSaveTrigger }) => {
 };
 
 export default LiveSpecPreview;
+

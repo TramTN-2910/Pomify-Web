@@ -18,12 +18,13 @@ export const createCustomerOrderApi = async (orderData) => {
     });
     const data = await res.json();
 
-    // Cache locally for Admin fallback storage
+    // Cache order & notification locally for Admin fallback storage
     try {
       const localAdminOrders = JSON.parse(localStorage.getItem('pomify_local_orders') || '[]');
+      const assignedCode = data.data?.orderCode || `POM-2026-${Math.floor(1000 + Math.random() * 9000)}`;
       const newLocal = {
         _id: data.data?._id || `ord-${Date.now()}`,
-        orderCode: data.data?.orderCode || `POM-2026-${Math.floor(1000 + Math.random() * 9000)}`,
+        orderCode: assignedCode,
         customerName: orderData.customerName,
         customerEmail: orderData.customerEmail,
         customerPhone: orderData.customerPhone,
@@ -38,6 +39,18 @@ export const createCustomerOrderApi = async (orderData) => {
       };
       localAdminOrders.unshift(newLocal);
       localStorage.setItem('pomify_local_orders', JSON.stringify(localAdminOrders));
+
+      const localNotifs = JSON.parse(localStorage.getItem('pomify_local_notifications') || '[]');
+      localNotifs.unshift({
+        _id: `notif-${Date.now()}`,
+        title: 'New Order Received 🛒',
+        message: `Order ${assignedCode} placed by ${orderData.customerName} (${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(orderData.totalAmount || 3490000)}).`,
+        type: 'order',
+        isRead: false,
+        link: '/admin/orders',
+        createdAt: new Date().toISOString(),
+      });
+      localStorage.setItem('pomify_local_notifications', JSON.stringify(localNotifs));
     } catch (e) {
       // Storage warning
     }
@@ -66,6 +79,18 @@ export const createCustomerOrderApi = async (orderData) => {
       const localAdminOrders = JSON.parse(localStorage.getItem('pomify_local_orders') || '[]');
       localAdminOrders.unshift(fallbackObj);
       localStorage.setItem('pomify_local_orders', JSON.stringify(localAdminOrders));
+
+      const localNotifs = JSON.parse(localStorage.getItem('pomify_local_notifications') || '[]');
+      localNotifs.unshift({
+        _id: `notif-${Date.now()}`,
+        title: 'New Order Received 🛒',
+        message: `Order ${fallbackCode} placed by ${orderData.customerName} (${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(orderData.totalAmount || 3490000)}).`,
+        type: 'order',
+        isRead: false,
+        link: '/admin/orders',
+        createdAt: new Date().toISOString(),
+      });
+      localStorage.setItem('pomify_local_notifications', JSON.stringify(localNotifs));
     } catch (e) {}
 
     return {
@@ -75,6 +100,7 @@ export const createCustomerOrderApi = async (orderData) => {
     };
   }
 };
+
 
 
 // Admin Login API
@@ -344,17 +370,49 @@ export const fetchPublicProductsApi = async () => {
 
 // Notifications APIs
 export const getAdminNotificationsApi = async () => {
+  let dbNotifs = [];
+  let unread = 0;
   try {
     const res = await fetch(`${API_BASE_URL}/admin/notifications`, {
       headers: getAuthHeaders(),
     });
-    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-    const data = await res.json();
-    return data;
+    if (res.ok) {
+      const data = await res.json();
+      dbNotifs = data.data || [];
+      unread = data.unreadCount || 0;
+    }
   } catch (error) {
-    return { success: true, unreadCount: 0, data: [] };
+    // Backend offline
   }
+
+  const localNotifs = JSON.parse(localStorage.getItem('pomify_local_notifications') || 'null') || [
+    {
+      _id: 'notif-1',
+      title: 'New Order Received 🛒',
+      message: 'Order POM-2026-8804 placed by Pham Thu Thao (3,490,000 ₫).',
+      type: 'order',
+      isRead: false,
+      link: '/admin/orders',
+      createdAt: new Date().toISOString(),
+    },
+  ];
+
+  const map = new Map();
+  [...dbNotifs, ...localNotifs].forEach((n) => {
+    const key = n._id ? n._id.toString() : `${n.title}-${n.message}`;
+    if (!map.has(key)) {
+      map.set(key, n);
+    }
+  });
+
+  const combined = Array.from(map.values()).sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
+  const unreadCount = combined.filter((n) => !n.isRead).length;
+
+  return { success: true, unreadCount, data: combined };
 };
+
 
 export const markNotificationsReadApi = async () => {
   try {
