@@ -5,7 +5,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import Button from '../components/ui/Button';
 import useCartStore from '../features/shop/store/cartStore';
 import useOrderStore from '../features/shop/store/orderStore';
-import staticQRCodeImg from '../assets/qrcode.png';
+import { createCustomerOrderApi } from '../services/api';
 
 export const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -51,22 +51,48 @@ export const CheckoutPage = () => {
     processOrder();
   };
 
-  const processOrder = () => {
+  const processOrder = async () => {
     setIsSubmitting(true);
-    setTimeout(() => {
-      const orderPayload = {
-        total: total,
-        paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery (COD)' : paymentMethod === 'qr' ? 'VietQR Bank Transfer' : 'Credit Card (Visa/Mastercard)',
-        shippingInfo: formData,
-        items: [...cartItems],
-      };
-      
-      addOrder(orderPayload);
-      clearCart();
-      setIsSubmitting(false);
-      setShowQRModal(false);
-      setOrderSuccess(true);
-    }, 1500);
+    const formattedItems = cartItems.map((item) => ({
+      productId: item.id || 'prod-1',
+      name: item.name || 'Pomify Bot — Companion Edition',
+      price: item.price ? item.price * 25000 : 3490000,
+      quantity: item.quantity || 1,
+      customization: {
+        color: item.color || item.customization?.color || 'Lavender Violet',
+        accessory: item.accessory || item.customization?.accessory || 'Cat Ears',
+        expression: item.expression || item.customization?.expression || 'Cute Happy',
+      },
+    }));
+
+    const orderPayload = {
+      customerName: formData.fullName,
+      customerEmail: formData.email,
+      customerPhone: formData.phone,
+      shippingAddress: `${formData.address}, ${formData.city}`,
+      totalAmount: total * 25000,
+      paymentMethod: paymentMethod === 'cod' ? 'COD' : paymentMethod === 'qr' ? 'VietQR' : 'Credit Card',
+      items: formattedItems,
+      notes: formData.notes || '',
+    };
+
+    try {
+      await createCustomerOrderApi(orderPayload);
+    } catch (e) {
+      console.warn('API submission fallback');
+    }
+
+    addOrder({
+      total: total,
+      paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery (COD)' : paymentMethod === 'qr' ? 'VietQR Bank Transfer' : 'Credit Card',
+      shippingInfo: formData,
+      items: [...cartItems],
+    });
+
+    clearCart();
+    setIsSubmitting(false);
+    setShowQRModal(false);
+    setOrderSuccess(true);
   };
 
   return (

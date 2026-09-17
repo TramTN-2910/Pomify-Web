@@ -27,6 +27,8 @@ export const AdminOrdersPage = () => {
 
   useEffect(() => {
     fetchOrders();
+    const interval = setInterval(fetchOrders, 5000);
+    return () => clearInterval(interval);
   }, [statusFilter]);
 
   const handleSearchSubmit = (e) => {
