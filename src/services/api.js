@@ -114,57 +114,6 @@ export const getAdminOrdersApi = async (status = 'All', search = '') => {
         notes: 'Deliver during office hours, call 15 minutes before arrival.',
         createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
       },
-      {
-        _id: 'ord-8802',
-        orderCode: 'POM-2026-8802',
-        customerName: 'Tran Thi Minh',
-        customerEmail: 'minh.tran@example.com',
-        customerPhone: '0987654321',
-        shippingAddress: '456 Le Loi St, District 1, Ho Chi Minh City',
-        items: [
-          { productId: 'prod-1', name: 'Pomify Bot — Companion Edition', price: 3490000, quantity: 1, customization: { color: 'Sky Blue', accessory: 'Halo Ring' } },
-          { productId: 'prod-2', name: 'Pomify Wireless Charging Dock', price: 590000, quantity: 1 },
-        ],
-        totalAmount: 4080000,
-        paymentMethod: 'COD',
-        paymentStatus: 'Pending',
-        status: 'Processing',
-        cancellationReason: '',
-        notes: '',
-        createdAt: new Date(Date.now() - 3600000 * 5).toISOString(),
-      },
-      {
-        _id: 'ord-8803',
-        orderCode: 'POM-2026-8803',
-        customerName: 'Le Hoang Nam',
-        customerEmail: 'nam.le@example.com',
-        customerPhone: '0912345678',
-        shippingAddress: '789 Dien Bien Phu St, Binh Thanh District, Ho Chi Minh City',
-        items: [{ productId: 'prod-3', name: 'Pomify Smart Silicone Case & Ears Set', price: 290000, quantity: 2 }],
-        totalAmount: 580000,
-        paymentMethod: 'VietQR',
-        paymentStatus: 'Paid',
-        status: 'Delivered',
-        cancellationReason: '',
-        notes: 'Delivered successfully.',
-        createdAt: new Date(Date.now() - 86400000).toISOString(),
-      },
-      {
-        _id: 'ord-8804',
-        orderCode: 'POM-2026-8804',
-        customerName: 'Pham Thu Thao',
-        customerEmail: 'thao.pham@example.com',
-        customerPhone: '0933445566',
-        shippingAddress: '12 Cach Mang Thang 8 St, District 3, Ho Chi Minh City',
-        items: [{ productId: 'prod-1', name: 'Pomify Bot — Companion Edition', price: 3490000, quantity: 1, customization: { color: 'Sakura Pink', accessory: 'Crown' } }],
-        totalAmount: 3490000,
-        paymentMethod: 'Credit Card',
-        paymentStatus: 'Paid',
-        status: 'Pending',
-        cancellationReason: '',
-        notes: 'Birthday gift wrapping requested.',
-        createdAt: new Date(Date.now() - 172800000).toISOString(),
-      },
     ];
 
     return localOrders.filter((o) => {
@@ -179,7 +128,6 @@ export const getAdminOrdersApi = async (status = 'All', search = '') => {
   }
 };
 
-// Update Order Status API with cancellation reason
 export const updateOrderStatusApi = async (id, status, paymentStatus, cancellationReason = '') => {
   try {
     const res = await fetch(`${API_BASE_URL}/admin/orders/${id}/status`, {
@@ -204,7 +152,7 @@ export const updateOrderStatusApi = async (id, status, paymentStatus, cancellati
   }
 };
 
-// Admin Inventory API
+// Admin Inventory APIs (Full CRUD)
 export const getAdminInventoryApi = async (category = 'All', status = 'All', search = '') => {
   try {
     const params = new URLSearchParams();
@@ -230,47 +178,8 @@ export const getAdminInventoryApi = async (category = 'All', status = 'All', sea
         stock: 45,
         lowStockThreshold: 10,
         status: 'In Stock',
+        badge: 'Best Seller',
         image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500',
-        variants: [
-          { name: 'Lavender Violet', color: '#A78BFA', accessory: 'Cat Ears', stock: 20 },
-          { name: 'Sky Blue', color: '#93C5FD', accessory: 'Halo Ring', stock: 15 },
-          { name: 'Sakura Pink', color: '#FBCFE8', accessory: 'Crown', stock: 10 },
-        ],
-      },
-      {
-        _id: 'prod-2',
-        name: 'Pomify Wireless Charging Dock',
-        sku: 'POM-ACC-DOCK',
-        category: 'Accessories',
-        price: 590000,
-        stock: 3,
-        lowStockThreshold: 5,
-        status: 'Low Stock',
-        image: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=500',
-        variants: [],
-      },
-      {
-        _id: 'prod-3',
-        name: 'Pomify Smart Silicone Case & Ears Set',
-        sku: 'POM-ACC-CASE',
-        category: 'Accessories',
-        price: 290000,
-        stock: 80,
-        lowStockThreshold: 15,
-        status: 'In Stock',
-        image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500',
-        variants: [],
-      },
-      {
-        _id: 'prod-4',
-        name: 'Pomify Mini Smart Speaker Pod',
-        sku: 'POM-BOT-MINI',
-        category: 'Robots',
-        price: 1890000,
-        stock: 0,
-        lowStockThreshold: 5,
-        status: 'Out of Stock',
-        image: 'https://images.unsplash.com/photo-1543512214-318c7553f230?w=500',
         variants: [],
       },
     ];
@@ -287,13 +196,38 @@ export const getAdminInventoryApi = async (category = 'All', status = 'All', sea
   }
 };
 
-// Update Inventory Stock API
-export const updateInventoryItemApi = async (id, stock, price, lowStockThreshold) => {
+export const createProductApi = async (productData) => {
   try {
+    const res = await fetch(`${API_BASE_URL}/admin/inventory`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(productData),
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.warn('[API Warning] Create product fallback to localStorage');
+    const inv = await getAdminInventoryApi('All', 'All', '');
+    const newProd = {
+      _id: `prod-${Date.now()}`,
+      ...productData,
+      stock: Number(productData.stock || 0),
+      price: Number(productData.price || 0),
+      status: Number(productData.stock) > 0 ? 'In Stock' : 'Out of Stock',
+    };
+    inv.unshift(newProd);
+    localStorage.setItem('pomify_local_inventory', JSON.stringify(inv));
+    return { success: true, message: 'Product created locally', data: newProd };
+  }
+};
+
+export const updateInventoryItemApi = async (id, updateFields) => {
+  try {
+    const payload = typeof updateFields === 'object' ? updateFields : { stock: updateFields };
     const res = await fetch(`${API_BASE_URL}/admin/inventory/${id}`, {
       method: 'PUT',
       headers: getAuthHeaders(),
-      body: JSON.stringify({ stock, price, lowStockThreshold }),
+      body: JSON.stringify(payload),
     });
     if (!res.ok) throw new Error(`HTTP error ${res.status}`);
     const data = await res.json();
@@ -303,20 +237,39 @@ export const updateInventoryItemApi = async (id, stock, price, lowStockThreshold
     const inv = await getAdminInventoryApi('All', 'All', '');
     const idx = inv.findIndex((item) => item._id === id || item.sku === id);
     if (idx !== -1) {
-      if (stock !== undefined) {
-        const newStock = Number(stock);
-        inv[idx].stock = newStock;
-        const threshold = lowStockThreshold !== undefined ? Number(lowStockThreshold) : inv[idx].lowStockThreshold;
-        if (newStock <= 0) inv[idx].status = 'Out of Stock';
-        else if (newStock <= threshold) inv[idx].status = 'Low Stock';
-        else inv[idx].status = 'In Stock';
-      }
-      if (price !== undefined) inv[idx].price = Number(price);
-      if (lowStockThreshold !== undefined) inv[idx].lowStockThreshold = Number(lowStockThreshold);
+      Object.assign(inv[idx], typeof updateFields === 'object' ? updateFields : { stock: updateFields });
       localStorage.setItem('pomify_local_inventory', JSON.stringify(inv));
-      return { success: true, message: 'Stock updated locally', data: inv[idx] };
+      return { success: true, message: 'Updated locally', data: inv[idx] };
     }
     return { success: false, message: 'Item not found' };
+  }
+};
+
+export const deleteInventoryItemApi = async (id) => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/admin/inventory/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    const inv = await getAdminInventoryApi('All', 'All', '');
+    const filtered = inv.filter((item) => item._id !== id && item.sku !== id);
+    localStorage.setItem('pomify_local_inventory', JSON.stringify(filtered));
+    return { success: true, message: 'Deleted locally' };
+  }
+};
+
+// Customer Public Store Catalog API
+export const fetchPublicProductsApi = async () => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/products`);
+    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+    const data = await res.json();
+    return data.data;
+  } catch (error) {
+    return getAdminInventoryApi('All', 'All', '');
   }
 };
 
@@ -330,40 +283,7 @@ export const getAdminNotificationsApi = async () => {
     const data = await res.json();
     return data;
   } catch (error) {
-    console.warn('[API Warning] Notifications API fallback');
-    return {
-      success: true,
-      unreadCount: 2,
-      data: [
-        {
-          _id: 'n1',
-          title: 'New Order Placed',
-          message: 'Order POM-2026-8804 placed by Pham Thu Thao (3,490,000 ₫).',
-          type: 'order',
-          isRead: false,
-          link: '/admin/orders',
-          createdAt: new Date(Date.now() - 300000).toISOString(),
-        },
-        {
-          _id: 'n2',
-          title: 'Low Stock Alert ⚠️',
-          message: 'Pomify Wireless Charging Dock stock is down to 3 units.',
-          type: 'stock',
-          isRead: false,
-          link: '/admin/inventory',
-          createdAt: new Date(Date.now() - 7200000).toISOString(),
-        },
-        {
-          _id: 'n3',
-          title: 'Order Status Update',
-          message: 'Order POM-2026-8801 status changed to Shipping.',
-          type: 'order',
-          isRead: true,
-          link: '/admin/orders',
-          createdAt: new Date(Date.now() - 21600000).toISOString(),
-        },
-      ],
-    };
+    return { success: true, unreadCount: 0, data: [] };
   }
 };
 
@@ -373,9 +293,8 @@ export const markNotificationsReadApi = async () => {
       method: 'PUT',
       headers: getAuthHeaders(),
     });
-    const data = await res.json();
-    return data;
+    return await res.json();
   } catch (error) {
-    return { success: true, message: 'Notifications marked read locally' };
+    return { success: true, message: 'Marked read locally' };
   }
 };

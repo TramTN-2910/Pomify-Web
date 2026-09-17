@@ -109,14 +109,16 @@ export const ProductBuyBox = () => {
                     : 'border-slate-200 bg-white hover:border-purple-200'
                 }`}
               >
-                {edition.badge && (
-                  <span className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-pomify-purple text-white text-[10px] font-bold">
-                    {edition.badge}
-                  </span>
-                )}
-                <div className="flex items-center justify-between">
-                  <div className="font-bold text-sm text-pomify-navy">{edition.name}</div>
-                  <div className="font-black text-sm text-pomify-purple">${edition.price}</div>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-sm text-pomify-navy">{edition.name}</span>
+                    {edition.badge && (
+                      <span className="px-2 py-0.5 rounded-full bg-pomify-purple text-white text-[10px] font-bold shrink-0 shadow-sm">
+                        {edition.badge}
+                      </span>
+                    )}
+                  </div>
+                  <div className="font-black text-sm text-pomify-purple shrink-0">${edition.price}</div>
                 </div>
                 <p className="text-xs text-pomify-subtext mt-1">{edition.desc}</p>
               </button>
