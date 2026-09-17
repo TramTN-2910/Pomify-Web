@@ -74,11 +74,20 @@ The **Pomify Website** leverages modern React libraries and WebGL graphics for i
 * **Cart & Checkout (`/cart`, `/checkout`)**: Item breakdown, coupon codes, Guest Checkout support, shipping address forms, VietQR / COD / Credit Card payment methods, and instant email confirmation.
 * **Order History (`/orders`)**: Customer dashboard tracking order shipping status (`Processing` 🚚 -> `Shipping` 📦 -> `Delivered` 🎉).
 
+### 3.7. Admin Management Portal (`/admin/login`, `/admin/dashboard`, `/admin/orders`, `/admin/inventory`)
+* **Admin Login (`/admin/login`)**: Secure JWT authentication portal for store administrators.
+* **Sales Dashboard (`/admin/dashboard`)**: Analytics dashboard showcasing total revenue, total order count, pending orders, low stock alerts, revenue charts, top-selling products, and recent order feeds.
+* **Admin Order Management (`/admin/orders`)**: Comprehensive order management console with status filtering (`Pending`, `Processing`, `Shipping`, `Delivered`, `Cancelled`), detailed order drawer, and real-time status update capabilities.
+* **Inventory & Stock Management (`/admin/inventory`)**: Centralized warehouse inventory control system tracking product stock levels, customizable variant stock counts, reorder thresholds, low stock badges (`In Stock`, `Low Stock`, `Out of Stock`), and instant stock adjustments.
+
 ---
 
 ## 📦 4. Environment & API Services Configuration
 
 ```env
+# API Base URL
+VITE_API_BASE_URL=http://localhost:5000/api/v1
+
 # Mistral AI Assistant API Configuration
 VITE_MISTRAL_API_KEY=your_mistral_api_key_here
 
@@ -86,3 +95,24 @@ VITE_MISTRAL_API_KEY=your_mistral_api_key_here
 VITE_EMAIL_SERVICE_USER=oroka150@gmail.com
 VITE_EMAIL_SERVICE_PASS=zcxdwjjmwkdskujd
 ```
+
+---
+
+## ⚙️ 5. Backend Architecture & API Specification
+
+The **Pomify Backend Service** operates independently to power e-commerce operations, order tracking, and inventory control.
+
+### 5.1. Tech Stack
+* **Runtime & Framework:** Node.js (ESM) + Express.js
+* **Database:** MongoDB with Mongoose ODM
+* **Authentication:** JWT (JSON Web Tokens) with bcrypt password hashing
+* **CORS & Middleware:** Full CORS support for Vite frontend web applications
+
+### 5.2. Core API Endpoints
+* `POST /api/v1/auth/admin-login` — Admin authentication & JWT token generation
+* `GET /api/v1/admin/dashboard/stats` — Sales analytics & stock alerts
+* `GET /api/v1/admin/orders` — List & filter customer orders
+* `PUT /api/v1/admin/orders/:id/status` — Update order fulfillment status
+* `GET /api/v1/admin/inventory` — Retrieve inventory items & stock levels
+* `PUT /api/v1/admin/inventory/:id` — Update stock quantities & reorder thresholds
+
