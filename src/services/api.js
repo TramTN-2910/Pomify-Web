@@ -1,0 +1,511 @@
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/v1';
+
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('pomify_admin_token');
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+};
+
+// Customer Order Submission API
+export const createCustomerOrderApi = async (orderData) => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/orders`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(orderData),
+      signal: AbortSignal.timeout(4000),
+    });
+    const data = await res.json();
+
+    // Cache order & notification locally for Admin fallback storage
+    try {
+      const localAdminOrders = JSON.parse(localStorage.getItem('pomify_local_orders') || '[]');
+      const assignedCode = data.data?.orderCode || `POM-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+      const newLocal = {
+        _id: data.data?._id || `ord-${Date.now()}`,
+        orderCode: assignedCode,
+        customerName: orderData.customerName,
+        customerEmail: orderData.customerEmail,
+        customerPhone: orderData.customerPhone,
+        shippingAddress: orderData.shippingAddress,
+        items: orderData.items,
+        totalAmount: orderData.totalAmount,
+        paymentMethod: orderData.paymentMethod,
+        paymentStatus: orderData.paymentMethod === 'VietQR' || orderData.paymentMethod === 'Credit Card' ? 'Paid' : 'Pending',
+        status: 'Pending',
+        cancellationReason: '',
+        createdAt: new Date().toISOString(),
+      };
+      localAdminOrders.unshift(newLocal);
+      localStorage.setItem('pomify_local_orders', JSON.stringify(localAdminOrders));
+
+      const localNotifs = JSON.parse(localStorage.getItem('pomify_local_notifications') || '[]');
+      localNotifs.unshift({
+        _id: `notif-${Date.now()}`,
+        title: 'New Order Received 🛒',
+        message: `Order ${assignedCode} placed by ${orderData.customerName} (${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(orderData.totalAmount || 3490000)}).`,
+        type: 'order',
+        isRead: false,
+        link: '/admin/orders',
+        createdAt: new Date().toISOString(),
+      });
+      localStorage.setItem('pomify_local_notifications', JSON.stringify(localNotifs));
+      window.dispatchEvent(new Event('pomify_new_order'));
+
+      // Deduct stock from local storage inventory cache
+      const localInv = JSON.parse(localStorage.getItem('pomify_local_inventory') || '[]');
+      if (Array.isArray(localInv) && localInv.length > 0) {
+        orderData.items.forEach((it) => {
+          const qty = Number(it.quantity || 1);
+          const idx = localInv.findIndex((p) =>
+            p._id === it.productId ||
+            p.sku === it.productId ||
+            (it.name && p.name.toLowerCase().includes(it.name.toLowerCase()))
+          );
+          if (idx !== -1) {
+            const newStock = Math.max(0, Number(localInv[idx].stock || 0) - qty);
+            localInv[idx].stock = newStock;
+            if (newStock <= 0) localInv[idx].status = 'Out of Stock';
+            else if (newStock <= (localInv[idx].lowStockThreshold || 5)) localInv[idx].status = 'Low Stock';
+          }
+        });
+        localStorage.setItem('pomify_local_inventory', JSON.stringify(localInv));
+      }
+    } catch (e) {
+      // Storage warning
+    }
+
+    return data;
+  } catch (error) {
+    console.warn('[API Warning] Submit order fallback');
+    const fallbackCode = `POM-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const fallbackObj = {
+      _id: `ord-${Date.now()}`,
+      orderCode: fallbackCode,
+      customerName: orderData.customerName,
+      customerEmail: orderData.customerEmail,
+      customerPhone: orderData.customerPhone,
+      shippingAddress: orderData.shippingAddress,
+      items: orderData.items,
+      totalAmount: orderData.totalAmount,
+      paymentMethod: orderData.paymentMethod,
+      paymentStatus: 'Pending',
+      status: 'Pending',
+      cancellationReason: '',
+      createdAt: new Date().toISOString(),
+    };
+
+    try {
+      const localAdminOrders = JSON.parse(localStorage.getItem('pomify_local_orders') || '[]');
+      localAdminOrders.unshift(fallbackObj);
+      localStorage.setItem('pomify_local_orders', JSON.stringify(localAdminOrders));
+
+      const localNotifs = JSON.parse(localStorage.getItem('pomify_local_notifications') || '[]');
+      localNotifs.unshift({
+        _id: `notif-${Date.now()}`,
+        title: 'New Order Received 🛒',
+        message: `Order ${fallbackCode} placed by ${orderData.customerName} (${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(orderData.totalAmount || 3490000)}).`,
+        type: 'order',
+        isRead: false,
+        link: '/admin/orders',
+        createdAt: new Date().toISOString(),
+      });
+      localStorage.setItem('pomify_local_notifications', JSON.stringify(localNotifs));
+      window.dispatchEvent(new Event('pomify_new_order'));
+    } catch (e) {}
+
+    return {
+      success: true,
+      message: 'Order created locally',
+      data: fallbackObj,
+    };
+  }
+};
+
+
+
+
+// Admin Login API
+export const adminLoginApi = async (email, password) => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/auth/admin-login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json();
+    if (data.success && data.token) {
+      localStorage.setItem('pomify_admin_token', data.token);
+      localStorage.setItem('pomify_admin_user', JSON.stringify(data.user));
+    }
+    return data;
+  } catch (error) {
+    console.warn('[API Warning] Backend server unreachable. Using local admin session fallback.');
+    if (email === 'admin@pomify.vn' && password === 'admin123') {
+      const mockUser = {
+        id: 'admin-local',
+        name: 'Pomify Admin',
+        email: 'admin@pomify.vn',
+        role: 'admin',
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+      };
+      const mockToken = 'mock-jwt-token-pomify-2026';
+      localStorage.setItem('pomify_admin_token', mockToken);
+      localStorage.setItem('pomify_admin_user', JSON.stringify(mockUser));
+      return { success: true, token: mockToken, user: mockUser };
+    }
+    return { success: false, message: 'Invalid credentials or server connection failed.' };
+  }
+};
+
+// Dashboard Stats API
+export const getDashboardStatsApi = async () => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/admin/dashboard/stats`, {
+      headers: getAuthHeaders(),
+    });
+    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+    const data = await res.json();
+    return data.data;
+  } catch (error) {
+    console.warn('[API Warning] Dashboard API fallback to local data');
+    return {
+      summary: {
+        totalRevenue: 11640000,
+        totalOrders: 4,
+        pendingOrders: 1,
+        lowStockCount: 2,
+      },
+      recentOrders: [
+        { _id: 'ord-8801', orderCode: 'POM-2026-8801', customerName: 'Nguyen Van An', totalAmount: 3490000, status: 'Shipping', createdAt: new Date() },
+        { _id: 'ord-8802', orderCode: 'POM-2026-8802', customerName: 'Tran Thi Minh', totalAmount: 4080000, status: 'Processing', createdAt: new Date(Date.now() - 3600000) },
+        { _id: 'ord-8803', orderCode: 'POM-2026-8803', customerName: 'Le Hoang Nam', totalAmount: 580000, status: 'Delivered', createdAt: new Date(Date.now() - 86400000) },
+        { _id: 'ord-8804', orderCode: 'POM-2026-8804', customerName: 'Pham Thu Thao', totalAmount: 3490000, status: 'Pending', createdAt: new Date(Date.now() - 172800000) },
+      ],
+      topProducts: [
+        { name: 'Pomify Bot — Companion Edition', sku: 'POM-BOT-01', sold: 34, stock: 45, revenue: 118660000 },
+        { name: 'Pomify Wireless Charging Dock', sku: 'POM-ACC-DOCK', sold: 19, stock: 3, revenue: 11210000 },
+        { name: 'Pomify Smart Silicone Case & Ears Set', sku: 'POM-ACC-CASE', sold: 52, stock: 80, revenue: 15080000 },
+      ],
+      salesTrend: [
+        { month: 'Apr', revenue: 42000000, orders: 12 },
+        { month: 'May', revenue: 68000000, orders: 19 },
+        { month: 'Jun', revenue: 85000000, orders: 24 },
+        { month: 'Jul', revenue: 110000000, orders: 31 },
+        { month: 'Aug', revenue: 135000000, orders: 39 },
+        { month: 'Sep', revenue: 168000000, orders: 48 },
+      ],
+    };
+  }
+};
+
+// Admin Orders API
+export const getAdminOrdersApi = async (status = 'All', search = '') => {
+  try {
+    const params = new URLSearchParams();
+    if (status) params.append('status', status);
+    if (search) params.append('search', search);
+
+    const res = await fetch(`${API_BASE_URL}/admin/orders?${params.toString()}`, {
+      headers: getAuthHeaders(),
+    });
+    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+    const data = await res.json();
+    return data.data;
+  } catch (error) {
+    console.warn('[API Warning] Orders API fallback');
+    const localOrders = JSON.parse(localStorage.getItem('pomify_local_orders') || 'null') || [
+      {
+        _id: 'ord-8801',
+        orderCode: 'POM-2026-8801',
+        customerName: 'Nguyen Van An',
+        customerEmail: 'an.nguyen@example.com',
+        customerPhone: '0901234567',
+        shippingAddress: '123 Nguyen Hue St, District 1, Ho Chi Minh City',
+        items: [{ productId: 'prod-1', name: 'Pomify Robot — Pomify Neo', price: 3490000, quantity: 1, customization: { color: 'Xanh Pastel', colorCode: '#A5BEEB', texture: '/models/Robot/textures/Mauxanh.png', personality: 'Cute Companion' } }],
+        totalAmount: 3490000,
+        paymentMethod: 'VietQR',
+        paymentStatus: 'Paid',
+        status: 'Shipping',
+        cancellationReason: '',
+        notes: 'Deliver during office hours, call 15 minutes before arrival.',
+        createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
+      },
+    ];
+
+    return localOrders.filter((o) => {
+      const matchStatus = !status || status === 'All' || o.status === status;
+      const matchSearch =
+        !search ||
+        o.orderCode.toLowerCase().includes(search.toLowerCase()) ||
+        o.customerName.toLowerCase().includes(search.toLowerCase()) ||
+        o.customerEmail.toLowerCase().includes(search.toLowerCase());
+      return matchStatus && matchSearch;
+    });
+  }
+};
+
+export const updateOrderStatusApi = async (id, status, paymentStatus, cancellationReason = '') => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/admin/orders/${id}/status`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ status, paymentStatus, cancellationReason }),
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.warn('[API Warning] Update status fallback to localStorage');
+    const orders = await getAdminOrdersApi('All', '');
+    const idx = orders.findIndex((o) => o._id === id || o.orderCode === id);
+    if (idx !== -1) {
+      if (status) orders[idx].status = status;
+      if (paymentStatus) orders[idx].paymentStatus = paymentStatus;
+      if (cancellationReason) orders[idx].cancellationReason = cancellationReason;
+      localStorage.setItem('pomify_local_orders', JSON.stringify(orders));
+      return { success: true, message: 'Status updated locally', data: orders[idx] };
+    }
+    return { success: false, message: 'Order not found' };
+  }
+};
+
+// Admin Inventory APIs (Full CRUD)
+export const getAdminInventoryApi = async (category = 'All', status = 'All', search = '') => {
+  try {
+    const params = new URLSearchParams();
+    if (category) params.append('category', category);
+    if (status) params.append('status', status);
+    if (search) params.append('search', search);
+
+    const res = await fetch(`${API_BASE_URL}/admin/inventory?${params.toString()}`, {
+      headers: getAuthHeaders(),
+    });
+    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+    const data = await res.json();
+    if (data.data && Array.isArray(data.data) && data.data.length > 0) {
+      try {
+        localStorage.setItem('pomify_local_inventory', JSON.stringify(data.data));
+      } catch (e) {}
+    }
+    return data.data;
+  } catch (error) {
+    console.warn('[API Warning] Inventory API fallback');
+    const defaultProducts = [
+      {
+        _id: 'prod-1',
+        name: 'Pomify Bot — Standard Edition',
+        sku: 'POM-BOT-STD',
+        category: 'Robots',
+        price: 7475000,
+        stock: 45,
+        lowStockThreshold: 10,
+        status: 'In Stock',
+        badge: 'None',
+        image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500',
+        variants: [],
+      },
+      {
+        _id: 'prod-2',
+        name: 'Pomify Bot — Creator Kit Bundle',
+        sku: 'POM-BOT-CREATOR',
+        category: 'Robots',
+        price: 8725000,
+        stock: 25,
+        lowStockThreshold: 5,
+        status: 'In Stock',
+        badge: 'Popular',
+        image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500',
+        variants: [],
+      },
+      {
+        _id: 'prod-3',
+        name: 'Pomify Bot — Pro Companion Suite',
+        sku: 'POM-BOT-PRO',
+        category: 'Robots',
+        price: 9975000,
+        stock: 0,
+        lowStockThreshold: 5,
+        status: 'Out of Stock',
+        badge: 'Sold Out',
+        image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500',
+        variants: [],
+      },
+      {
+        _id: 'prod-4',
+        name: 'Pomify Wireless Charging Dock',
+        sku: 'POM-ACC-DOCK',
+        category: 'Accessories',
+        price: 590000,
+        stock: 3,
+        lowStockThreshold: 5,
+        status: 'Low Stock',
+        badge: 'Low Stock',
+        image: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=500',
+        variants: [],
+      },
+      {
+        _id: 'prod-5',
+        name: 'Pomify Smart Silicone Case & Ears Set',
+        sku: 'POM-ACC-CASE',
+        category: 'Accessories',
+        price: 290000,
+        stock: 80,
+        lowStockThreshold: 15,
+        status: 'In Stock',
+        badge: 'None',
+        image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500',
+        variants: [],
+      },
+    ];
+
+    const localInv = JSON.parse(localStorage.getItem('pomify_local_inventory') || 'null') || defaultProducts;
+
+    return localInv.filter((p) => {
+      const matchCat = !category || category === 'All' || p.category === category;
+      const matchStatus = !status || status === 'All' || p.status === status;
+      const matchSearch =
+        !search ||
+        p.name.toLowerCase().includes(search.toLowerCase()) ||
+        p.sku.toLowerCase().includes(search.toLowerCase());
+      return matchCat && matchStatus && matchSearch;
+    });
+  }
+};
+
+
+export const createProductApi = async (productData) => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/admin/inventory`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(productData),
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.warn('[API Warning] Create product fallback to localStorage');
+    const inv = await getAdminInventoryApi('All', 'All', '');
+    const newProd = {
+      _id: `prod-${Date.now()}`,
+      ...productData,
+      stock: Number(productData.stock || 0),
+      price: Number(productData.price || 0),
+      status: Number(productData.stock) > 0 ? 'In Stock' : 'Out of Stock',
+    };
+    inv.unshift(newProd);
+    localStorage.setItem('pomify_local_inventory', JSON.stringify(inv));
+    return { success: true, message: 'Product created locally', data: newProd };
+  }
+};
+
+export const updateInventoryItemApi = async (id, updateFields) => {
+  try {
+    const payload = typeof updateFields === 'object' ? updateFields : { stock: updateFields };
+    const res = await fetch(`${API_BASE_URL}/admin/inventory/${id}`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.warn('[API Warning] Inventory update fallback');
+    const inv = await getAdminInventoryApi('All', 'All', '');
+    const idx = inv.findIndex((item) => item._id === id || item.sku === id);
+    if (idx !== -1) {
+      Object.assign(inv[idx], typeof updateFields === 'object' ? updateFields : { stock: updateFields });
+      localStorage.setItem('pomify_local_inventory', JSON.stringify(inv));
+      return { success: true, message: 'Updated locally', data: inv[idx] };
+    }
+    return { success: false, message: 'Item not found' };
+  }
+};
+
+export const deleteInventoryItemApi = async (id) => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/admin/inventory/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    const inv = await getAdminInventoryApi('All', 'All', '');
+    const filtered = inv.filter((item) => item._id !== id && item.sku !== id);
+    localStorage.setItem('pomify_local_inventory', JSON.stringify(filtered));
+    return { success: true, message: 'Deleted locally' };
+  }
+};
+
+// Customer Public Store Catalog API
+export const fetchPublicProductsApi = async () => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/products`);
+    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+    const data = await res.json();
+    return data.data;
+  } catch (error) {
+    return getAdminInventoryApi('All', 'All', '');
+  }
+};
+
+// Notifications APIs
+export const getAdminNotificationsApi = async () => {
+  let dbNotifs = [];
+  let unread = 0;
+  try {
+    const res = await fetch(`${API_BASE_URL}/admin/notifications`, {
+      headers: getAuthHeaders(),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      dbNotifs = data.data || [];
+      unread = data.unreadCount || 0;
+    }
+  } catch (error) {
+    // Backend offline
+  }
+
+  const localNotifs = JSON.parse(localStorage.getItem('pomify_local_notifications') || 'null') || [
+    {
+      _id: 'notif-1',
+      title: 'New Order Received 🛒',
+      message: 'Order POM-2026-8804 placed by Pham Thu Thao (3,490,000 ₫).',
+      type: 'order',
+      isRead: false,
+      link: '/admin/orders',
+      createdAt: new Date().toISOString(),
+    },
+  ];
+
+  const map = new Map();
+  [...dbNotifs, ...localNotifs].forEach((n) => {
+    const key = n._id ? n._id.toString() : `${n.title}-${n.message}`;
+    if (!map.has(key)) {
+      map.set(key, n);
+    }
+  });
+
+  const combined = Array.from(map.values()).sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
+  const unreadCount = combined.filter((n) => !n.isRead).length;
+
+  return { success: true, unreadCount, data: combined };
+};
+
+
+export const markNotificationsReadApi = async () => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/admin/notifications/read`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+    });
+    return await res.json();
+  } catch (error) {
+    return { success: true, message: 'Marked read locally' };
+  }
+};

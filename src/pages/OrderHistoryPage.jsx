@@ -113,7 +113,15 @@ export const OrderHistoryPage = () => {
                         <span className="text-2xl">{item.image || '🤖'}</span>
                         <div>
                           <div className="font-bold text-pomify-navy">{item.name}</div>
-                          <div className="text-[10px] text-pomify-subtext">{item.edition} • Qty: {item.quantity}</div>
+                          <div className="flex items-center gap-1.5 text-[10px] text-pomify-subtext mt-0.5">
+                            {item.customization?.colorCode && (
+                              <span
+                                className="w-2 h-2 rounded-full inline-block border border-slate-200 shrink-0"
+                                style={{ backgroundColor: item.customization.colorCode }}
+                              />
+                            )}
+                            <span>{item.edition || item.customization?.color || 'Standard Edition'} • Qty: {item.quantity}</span>
+                          </div>
                         </div>
                       </div>
                       <div className="font-black text-pomify-navy">${item.price * item.quantity}</div>

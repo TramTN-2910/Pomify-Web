@@ -11,6 +11,8 @@ export const Lighting = () => {
         castShadow
         shadow-mapSize-width={1024}
         shadow-mapSize-height={1024}
+        shadow-bias={-0.0005}
+        shadow-normalBias={0.03}
       />
       <directionalLight position={[-5, 3, -5]} intensity={0.5} color="#DBEAFE" />
       <pointLight position={[0, 4, 3]} intensity={0.6} color="#FBCFE8" />

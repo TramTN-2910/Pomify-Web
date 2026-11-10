@@ -64,12 +64,6 @@ export const StudioLayout = () => {
               <CustomizerRobot3D isBouncing={isBouncing} />
             </CanvasViewer>
           </div>
-
-          {/* Footer Badge */}
-          <div className="absolute bottom-4 left-4 right-4 z-10 flex items-center justify-between px-4 py-2 rounded-2xl bg-white/70 backdrop-blur-md border border-blue-100/60 text-xs text-pomify-subtext">
-            <span className="font-semibold text-pomify-navy">3D Real-time Render Engine</span>
-            <span className="text-[11px] text-pomify-purple font-bold">Smart Cute Vibe</span>
-          </div>
         </div>
 
         {/* RIGHT COLUMN: Live Specs Summary & Action (3 cols) */}

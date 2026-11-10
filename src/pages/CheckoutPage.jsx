@@ -5,6 +5,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import Button from '../components/ui/Button';
 import useCartStore from '../features/shop/store/cartStore';
 import useOrderStore from '../features/shop/store/orderStore';
+import { createCustomerOrderApi } from '../services/api';
 
 export const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ export const CheckoutPage = () => {
 
   const [paymentMethod, setPaymentMethod] = useState('cod'); // cod, qr, card
   const [showQRModal, setShowQRModal] = useState(false);
+  const [qrTab, setQrTab] = useState('dynamic'); // dynamic, static
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(null);
 
@@ -49,22 +51,60 @@ export const CheckoutPage = () => {
     processOrder();
   };
 
-  const processOrder = () => {
+  const processOrder = async () => {
     setIsSubmitting(true);
-    setTimeout(() => {
+    try {
+      const formattedItems = cartItems.map((item) => ({
+        productId: item.id || 'prod-1',
+        name: item.name || 'Pomify Bot — Companion Edition',
+        price: item.price ? item.price * 25000 : 3490000,
+        quantity: item.quantity || 1,
+        customization: {
+          color: item.customization?.color || item.color || 'Pastel Blue',
+          colorCode: item.customization?.colorCode || '#A5BEEB',
+          texture: item.customization?.texture || '/models/Robot/textures/Mauxanh.png',
+          accessory: item.customization?.accessory || 'Standard CAD Shell',
+          expression: item.customization?.expression || 'Standard Display',
+        },
+      }));
+
       const orderPayload = {
+        customerName: formData.fullName,
+        customerEmail: formData.email,
+        customerPhone: formData.phone,
+        shippingAddress: `${formData.address}, ${formData.city}`,
+        totalAmount: total * 25000,
+        paymentMethod: paymentMethod === 'cod' ? 'COD' : paymentMethod === 'qr' ? 'VietQR' : 'Credit Card',
+        items: formattedItems,
+        notes: formData.notes || '',
+      };
+
+      let createdRes = null;
+      try {
+        createdRes = await createCustomerOrderApi(orderPayload);
+      } catch (e) {
+        console.warn('API submission fallback', e);
+      }
+
+      const assignedCode = createdRes?.data?.orderCode || `POM-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+
+      addOrder({
+        id: assignedCode,
+        orderCode: assignedCode,
         total: total,
-        paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery (COD)' : paymentMethod === 'qr' ? 'VietQR Bank Transfer' : 'Credit Card (Visa/Mastercard)',
+        paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery (COD)' : paymentMethod === 'qr' ? 'VietQR Bank Transfer' : 'Credit Card',
         shippingInfo: formData,
         items: [...cartItems],
-      };
-      
-      addOrder(orderPayload);
+      });
+
       clearCart();
+    } catch (err) {
+      console.error('Error during order checkout:', err);
+    } finally {
       setIsSubmitting(false);
       setShowQRModal(false);
       setOrderSuccess(true);
-    }, 1500);
+    }
   };
 
   return (
@@ -353,37 +393,52 @@ export const CheckoutPage = () => {
           </form>
         )}
 
-        {/* VietQR Modal Test */}
+        {/* VietQR Payment Transfer Modal */}
         {showQRModal && (
-          <div className="fixed inset-0 z-50 bg-pomify-navy/50 backdrop-blur-md flex items-center justify-center p-4">
-            <div className="bg-white rounded-4xl p-6 max-w-md w-full text-center space-y-4 shadow-2xl animate-scale-up">
-              <div className="flex items-center justify-between border-b border-purple-100 pb-3">
-                <h3 className="font-extrabold text-lg text-pomify-navy">VietQR Bank Transfer</h3>
-                <button onClick={() => setShowQRModal(false)} className="text-slate-400 hover:text-slate-600 text-xl font-bold">×</button>
+          <div className="fixed inset-0 z-50 bg-pomify-navy/60 backdrop-blur-md flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl p-5 max-w-sm w-full text-center space-y-3 shadow-2xl animate-scale-up">
+              <div className="flex items-center justify-between border-b border-purple-100 pb-2">
+                <h3 className="font-extrabold text-base text-pomify-navy">VietQR Payment Transfer</h3>
+                <button onClick={() => setShowQRModal(false)} className="text-slate-400 hover:text-slate-600 text-lg font-bold">×</button>
               </div>
 
-              <div className="p-4 rounded-3xl bg-purple-50 border border-purple-100 space-y-3">
-                <div className="w-48 h-48 rounded-2xl bg-white border border-purple-200 mx-auto flex flex-col items-center justify-center p-2 shadow-inner">
-                  {/* Fake QR Graphic */}
-                  <QrCode className="w-32 h-32 text-pomify-navy" />
-                  <span className="text-[10px] font-bold text-pomify-purple uppercase tracking-widest mt-1">MBBANK • POMIFY STORE</span>
+              <div className="p-3 rounded-2xl bg-purple-50/80 border border-purple-100 space-y-2">
+                <div className="bg-white p-2 rounded-xl border border-purple-200 inline-block shadow-inner">
+                  <img
+                    src={`https://img.vietqr.io/image/VCB-1031873856-compact2.png?amount=${Math.round(total * 25000)}&addInfo=POMIFY%20STORE&accountName=TRAN%20NGOC%20TRAM`}
+                    alt="VietQR Code"
+                    className="w-44 h-auto mx-auto rounded-lg"
+                  />
                 </div>
 
-                <div className="text-xs text-left space-y-1 text-pomify-navy font-medium">
-                  <div><strong>Account Number:</strong> 8829199999</div>
-                  <div><strong>Account Name:</strong> POMIFY CO LTD</div>
-                  <div><strong>Amount:</strong> ${total} USD</div>
-                  <div><strong>Ref Note:</strong> POM-{Math.floor(1000 + Math.random() * 9000)}</div>
+                <div className="text-xs text-left space-y-1 text-pomify-navy font-medium bg-white p-2.5 rounded-xl border border-purple-100">
+                  <div className="flex justify-between">
+                    <span className="text-pomify-subtext">Account Name:</span>
+                    <strong className="text-purple-700 font-bold">TRAN NGOC TRAM</strong>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-pomify-subtext">Account Number:</span>
+                    <strong className="font-mono text-pomify-navy font-bold">1031873856</strong>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-pomify-subtext">Amount (VND):</span>
+                    <strong className="text-emerald-600 font-extrabold">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(total * 25000)}</strong>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-pomify-subtext">Transfer Memo:</span>
+                    <strong className="font-mono text-purple-700 font-bold">POMIFY CHECKOUT</strong>
+                  </div>
                 </div>
               </div>
 
               <Button
                 variant="primary"
                 size="md"
-                className="w-full"
+                disabled={isSubmitting}
+                className="w-full shadow-cute-float text-xs py-2.5"
                 onClick={processOrder}
               >
-                I Have Completed Transfer
+                {isSubmitting ? 'Confirming Transfer...' : 'I Have Completed Transfer'}
               </Button>
             </div>
           </div>

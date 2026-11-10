@@ -16,6 +16,10 @@ import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
 import ForgotPasswordPage from '../pages/ForgotPasswordPage';
 import NotFoundPage from '../pages/NotFoundPage';
+import AdminLoginPage from '../pages/admin/AdminLoginPage';
+import AdminDashboardPage from '../pages/admin/AdminDashboardPage';
+import AdminOrdersPage from '../pages/admin/AdminOrdersPage';
+import AdminInventoryPage from '../pages/admin/AdminInventoryPage';
 
 export const AppRouter = () => {
   return (
@@ -36,6 +40,14 @@ export const AppRouter = () => {
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/privacy" element={<PrivacyPolicyPage />} />
       <Route path="/terms" element={<TermsOfServicePage />} />
+
+      {/* Admin Management Portal Routes */}
+      <Route path="/admin/login" element={<AdminLoginPage />} />
+      <Route path="/admin" element={<AdminDashboardPage />} />
+      <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+      <Route path="/admin/orders" element={<AdminOrdersPage />} />
+      <Route path="/admin/inventory" element={<AdminInventoryPage />} />
+
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingBag, Palette, Sparkles, Star, ShieldCheck, Truck, Check } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -6,19 +6,13 @@ import Button from '../../../components/ui/Button';
 import CanvasViewer from '../../../components/3d/CanvasViewer';
 import PomifyRobot3D from '../../robot-companion/components/PomifyRobot3D';
 import useRobotStore from '../../robot-companion/store/robotStore';
+import useCustomizerStore, { COLOR_OPTIONS } from '../../customize-studio/store/customizerStore';
 import SpeechBubble from '../../../components/ui/SpeechBubble';
 
 export const ShopHero = () => {
   const navigate = useNavigate();
   const { setBubbleText, triggerReaction, bubbleText, showBubble } = useRobotStore();
-  const [selectedColor, setSelectedColor] = useState('purple');
-
-  const colorSwatches = [
-    { id: 'purple', name: 'Pastel Purple', hex: '#A78BFA' },
-    { id: 'blue', name: 'Baby Blue', hex: '#93C5FD' },
-    { id: 'pink', name: 'Sakura Pink', hex: '#FBCFE8' },
-    { id: 'mint', name: 'Fresh Mint', hex: '#A7F3D0' },
-  ];
+  const { color: selectedColor, setColor } = useCustomizerStore();
 
   const handlePurchaseHover = () => {
     setBubbleText("Ready to come home with you! 🛍️", true);
@@ -57,22 +51,22 @@ export const ShopHero = () => {
           {/* Quick Color Selector */}
           <div className="space-y-2 pt-2">
             <div className="text-xs font-bold uppercase tracking-wider text-pomify-navy/70">
-              Select Color Edition: <span className="text-pomify-purple">{colorSwatches.find((c) => c.id === selectedColor)?.name}</span>
+              Select Color Edition: <span className="text-pomify-purple">{selectedColor?.name}</span>
             </div>
             <div className="flex items-center gap-3">
-              {colorSwatches.map((swatch) => (
+              {COLOR_OPTIONS.map((swatch) => (
                 <button
                   key={swatch.id}
-                  onClick={() => setSelectedColor(swatch.id)}
+                  onClick={() => setColor(swatch)}
                   className={`w-9 h-9 rounded-full transition-all duration-200 flex items-center justify-center border-2 ${
-                    selectedColor === swatch.id
+                    selectedColor?.id === swatch.id
                       ? 'border-pomify-purple scale-110 shadow-md ring-2 ring-pomify-purple/30'
                       : 'border-white hover:scale-105'
                   }`}
-                  style={{ backgroundColor: swatch.hex }}
+                  style={{ backgroundColor: swatch.bodyColor }}
                   title={swatch.name}
                 >
-                  {selectedColor === swatch.id && <Check className="w-4 h-4 text-slate-800" />}
+                  {selectedColor?.id === swatch.id && <Check className="w-4 h-4 text-slate-800" />}
                 </button>
               ))}
             </div>
