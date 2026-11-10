@@ -1,38 +1,47 @@
 import { create } from 'zustand';
 
 export const COLOR_OPTIONS = [
-  { id: 'mascotBlue', name: 'Mascot Blue', bodyColor: '#3B82F6', accentColor: '#60A5FA', price: 0 },
-  { id: 'purple', name: 'Pastel Purple', bodyColor: '#A78BFA', accentColor: '#C4B5FD', price: 0 },
-  { id: 'blue', name: 'Baby Blue', bodyColor: '#93C5FD', accentColor: '#BFDBFE', price: 0 },
-  { id: 'pink', name: 'Sakura Pink', bodyColor: '#FBCFE8', accentColor: '#FCE7F3', price: 0 },
-  { id: 'mint', name: 'Fresh Mint', bodyColor: '#A7F3D0', accentColor: '#D1FAE5', price: 0 },
-  { id: 'violet', name: 'Midnight Violet', bodyColor: '#1D4ED8', accentColor: '#3B82F6', price: 15 },
-  { id: 'pearl', name: 'Pearl White', bodyColor: '#FFFFFF', accentColor: '#E2E8F0', price: 10 },
+  {
+    id: 'blue',
+    name: 'Pastel Blue',
+    texture: '/models/Robot/textures/Mauxanh.png',
+    bodyColor: '#A5BEEB',
+    accentColor: '#3B82F6',
+    price: 0,
+    desc: 'Elegant, modern and refreshing aesthetic',
+    badge: 'Popular',
+  },
+  {
+    id: 'pink',
+    name: 'Sakura Pink',
+    texture: '/models/Robot/textures/Mauhong.png',
+    bodyColor: '#F2A8B4',
+    accentColor: '#EC4899',
+    price: 0,
+    desc: 'Warm, cheerful and friendly tone',
+    badge: 'Sweet',
+  },
+  {
+    id: 'purple',
+    name: 'Pastel Purple',
+    texture: '/models/Robot/textures/Mautim.png',
+    bodyColor: '#A491D3',
+    accentColor: '#8B5CF6',
+    price: 0,
+    desc: 'Subtle, creative and mystic aesthetic',
+    badge: 'Signature',
+  },
 ];
 
 export const FINISH_OPTIONS = [
-  { id: 'gloss', name: 'Silk Gloss', roughness: 0.15, metalness: 0.1, price: 0 },
-  { id: 'matte', name: 'Soft Velvet Matte', roughness: 0.65, metalness: 0.05, price: 0 },
-  { id: 'metallic', name: 'Chrono Metallic', roughness: 0.2, metalness: 0.6, price: 20 },
+  { id: 'pbr', name: 'Factory PBR Standard', roughness: 0.7, metalness: 0.4, price: 0 },
 ];
 
 export const EXPRESSION_OPTIONS = [
-  { id: 'happy', name: 'Happy Smile', icon: '😊' },
-  { id: 'curious', name: 'Curious Eye', icon: '🥺' },
-  { id: 'wink', name: 'Playful Wink', icon: '😉' },
-  { id: 'caring', name: 'Caring Heart', icon: '🥰' },
-  { id: 'starry', name: 'Starry Eyes', icon: '🤩' },
-  { id: 'chill', name: 'Chill Relaxed', icon: '😌' },
+  { id: 'default', name: 'Standard Display', icon: '🤖' },
 ];
 
-export const ACCESSORY_OPTIONS = [
-  { id: 'catEars', name: 'Necomimi Cat Ears', price: 25, icon: '🐱', category: 'head' },
-  { id: 'halo', name: 'Angel Halo Ring', price: 30, icon: '😇', category: 'head' },
-  { id: 'glasses', name: 'Smart AR Glasses', price: 35, icon: '👓', category: 'face' },
-  { id: 'beanie', name: 'Cozy Wool Beanie', price: 20, icon: '🧢', category: 'head' },
-  { id: 'bowtie', name: 'Dapper Bowtie', price: 15, icon: '👔', category: 'neck' },
-  { id: 'crown', name: 'Mini Royal Crown', price: 40, icon: '👑', category: 'head' },
-];
+export const ACCESSORY_OPTIONS = [];
 
 export const PERSONALITY_OPTIONS = [
   { id: 'cute', name: 'Cute Companion', desc: 'Warm, cheerful & emotionally expressive' },
@@ -41,8 +50,12 @@ export const PERSONALITY_OPTIONS = [
 ];
 
 export const MODEL_OPTIONS = [
-  { id: 'customStl', name: 'Pomify CAD Robot', desc: 'High-detail 3D Hardware Model', price: 0 },
-  { id: 'procedural', name: 'Pomify Cute Avatar', desc: 'Stylized Companion Avatar', price: 0 },
+  {
+    id: 'customStl',
+    name: 'Pomify CAD Robot',
+    desc: 'High-detail 3D hardware model with authentic PBR textures',
+    price: 0,
+  },
 ];
 
 export const BASE_PRICE = 299;
@@ -54,7 +67,7 @@ export const useCustomizerStore = create((set, get) => ({
   expression: EXPRESSION_OPTIONS[0],
   accessories: [],
   personality: PERSONALITY_OPTIONS[0],
-  robotName: 'Pomify Custom',
+  robotName: 'Pomify Neo',
   isSaved: false,
 
   setModelType: (modelType) => set({ modelType, isSaved: false }),
@@ -75,8 +88,8 @@ export const useCustomizerStore = create((set, get) => ({
   getTotalPrice: () => {
     const state = get();
     const colorAddon = state.color.price || 0;
-    const finishAddon = state.finish.price || 0;
-    const accessoriesAddon = state.accessories.reduce((sum, item) => sum + item.price, 0);
+    const finishAddon = state.finish?.price || 0;
+    const accessoriesAddon = state.accessories.reduce((sum, item) => sum + (item.price || 0), 0);
     return BASE_PRICE + colorAddon + finishAddon + accessoriesAddon;
   },
 

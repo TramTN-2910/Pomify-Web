@@ -23,11 +23,21 @@ export const RegisterPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const customerData = {
+      name: fullName || email.split('@')[0],
+      email: email,
+      role: 'customer',
+    };
+    const customerToken = `cust-token-${Date.now()}`;
+    localStorage.setItem('pomify_customer_token', customerToken);
+    localStorage.setItem('pomify_customer_user', JSON.stringify(customerData));
+    window.dispatchEvent(new Event('pomify_auth_change'));
+
     setBubbleText("Account created! Welcome to Pomify 💜", true);
     triggerReaction('happy');
     setTimeout(() => {
-      navigate('/orders');
-    }, 1000);
+      navigate('/');
+    }, 600);
   };
 
   return (

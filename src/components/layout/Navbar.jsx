@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Menu, X, ArrowRight, ShoppingBag, Palette, User, LogIn, LogOut, Package } from 'lucide-react';
+import { Menu, X, ShoppingBag, Palette, User, LogIn, LogOut, Package, ShieldCheck, LayoutDashboard } from 'lucide-react';
 import logoImg from '../../assets/logo.png';
 import Button from '../ui/Button';
 import useCartStore from '../../features/shop/store/cartStore';
@@ -10,7 +10,8 @@ export const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Demo Auth state
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const location = useLocation();
 
   const { getCartCount } = useCartStore();
@@ -23,6 +24,53 @@ export const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const adminToken = localStorage.getItem('pomify_admin_token');
+      const adminUser = localStorage.getItem('pomify_admin_user');
+      const customerToken = localStorage.getItem('pomify_customer_token');
+      const customerUser = localStorage.getItem('pomify_customer_user');
+
+      if (adminToken) {
+        setIsAdmin(true);
+        try {
+          setCurrentUser(adminUser ? JSON.parse(adminUser) : { name: 'Pomify Admin', email: 'admin@pomify.vn' });
+        } catch (e) {
+          setCurrentUser({ name: 'Pomify Admin', email: 'admin@pomify.vn' });
+        }
+      } else if (customerToken) {
+        setIsAdmin(false);
+        try {
+          setCurrentUser(customerUser ? JSON.parse(customerUser) : { name: 'Pomify User', email: 'customer@pomify.ai' });
+        } catch (e) {
+          setCurrentUser({ name: 'Pomify User', email: 'customer@pomify.ai' });
+        }
+      } else {
+        setIsAdmin(false);
+        setCurrentUser(null);
+      }
+    };
+
+    checkAuth();
+    window.addEventListener('storage', checkAuth);
+    window.addEventListener('pomify_auth_change', checkAuth);
+    return () => {
+      window.removeEventListener('storage', checkAuth);
+      window.removeEventListener('pomify_auth_change', checkAuth);
+    };
+  }, []);
+
+  const handleSignOut = () => {
+    localStorage.removeItem('pomify_admin_token');
+    localStorage.removeItem('pomify_admin_user');
+    localStorage.removeItem('pomify_customer_token');
+    localStorage.removeItem('pomify_customer_user');
+    setCurrentUser(null);
+    setIsAdmin(false);
+    setUserDropdownOpen(false);
+    window.dispatchEvent(new Event('pomify_auth_change'));
+  };
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -104,14 +152,20 @@ export const Navbar = () => {
             )}
           </Link>
 
-          {/* User Profile / Auth Dropdown (OUTERMOST FAR RIGHT) */}
+          {/* User Profile / Auth Dropdown */}
           <div className="relative">
             <button
               onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-              className="p-2.5 rounded-full bg-white/80 border border-purple-100 shadow-sm hover:border-pomify-purple text-pomify-navy hover:text-pomify-purple transition-all flex items-center gap-1.5"
+              className={`p-2.5 rounded-full border shadow-sm transition-all flex items-center gap-1.5 ${
+                currentUser
+                  ? isAdmin
+                    ? 'bg-purple-100 border-purple-300 text-pomify-purple'
+                    : 'bg-blue-100 border-blue-300 text-blue-700'
+                  : 'bg-white/80 border-purple-100 text-pomify-navy hover:text-pomify-purple'
+              }`}
               title="User Account"
             >
-              <User className="w-5 h-5" />
+              {isAdmin ? <ShieldCheck className="w-5 h-5 text-pomify-purple" /> : <User className="w-5 h-5" />}
             </button>
 
             <AnimatePresence>
@@ -120,29 +174,81 @@ export const Navbar = () => {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
-                  className="absolute right-0 mt-2 w-48 bg-white/95 backdrop-blur-xl border border-purple-100 rounded-2xl shadow-xl p-2 z-50 text-left"
+                  className="absolute right-0 mt-2 w-56 bg-white/95 backdrop-blur-xl border border-purple-100 rounded-2xl shadow-xl p-2 z-50 text-left"
                 >
-                  {isLoggedIn ? (
+                  {currentUser ? (
                     <div className="space-y-1">
                       <div className="px-3 py-2 border-b border-purple-50">
-                        <div className="text-xs font-bold text-pomify-navy">Alex Companion</div>
-                        <div className="text-[10px] text-pomify-subtext">alex@pomify.ai</div>
+                        <div className="flex items-center justify-between">
+                          <div className="text-xs font-bold text-pomify-navy truncate max-w-[130px]">{currentUser.name}</div>
+                          {isAdmin && (
+                            <span className="px-1.5 py-0.5 rounded bg-purple-100 text-[10px] font-bold text-pomify-purple">
+                              Admin
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-[10px] text-pomify-subtext truncate">{currentUser.email}</div>
                       </div>
-                      <Link to="/orders" onClick={() => setUserDropdownOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-pomify-navy hover:bg-purple-50">
-                        <Package className="w-4 h-4 text-pomify-purple" /> Order History
-                      </Link>
-                      <button onClick={() => { setIsLoggedIn(false); setUserDropdownOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-rose-500 hover:bg-rose-50">
+
+                      {isAdmin ? (
+                        <>
+                          <Link
+                            to="/admin/orders"
+                            onClick={() => setUserDropdownOpen(false)}
+                            className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-pomify-purple hover:bg-purple-50"
+                          >
+                            <Package className="w-4 h-4 text-pomify-purple" /> Manage Orders
+                          </Link>
+                          <Link
+                            to="/admin/dashboard"
+                            onClick={() => setUserDropdownOpen(false)}
+                            className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-pomify-navy hover:bg-purple-50"
+                          >
+                            <LayoutDashboard className="w-4 h-4 text-pomify-purple" /> Admin Dashboard
+                          </Link>
+                        </>
+                      ) : (
+                        <Link
+                          to="/orders"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-pomify-navy hover:bg-purple-50"
+                        >
+                          <Package className="w-4 h-4 text-pomify-purple" /> My Orders
+                        </Link>
+                      )}
+
+                      <button
+                        onClick={handleSignOut}
+                        className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-rose-500 hover:bg-rose-50 border-t border-purple-50 mt-1"
+                      >
                         <LogOut className="w-4 h-4" /> Sign Out
                       </button>
                     </div>
                   ) : (
                     <div className="space-y-1">
-                      <Link to="/login" onClick={() => setUserDropdownOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-pomify-navy hover:bg-purple-50">
+                      <Link
+                        to="/login"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-pomify-navy hover:bg-purple-50"
+                      >
                         <LogIn className="w-4 h-4 text-pomify-purple" /> Sign In
                       </Link>
-                      <Link to="/register" onClick={() => setUserDropdownOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-pomify-purple-dark hover:bg-purple-50">
+                      <Link
+                        to="/register"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-pomify-purple-dark hover:bg-purple-50"
+                      >
                         <User className="w-4 h-4 text-pomify-purple" /> Create Account
                       </Link>
+                      <div className="border-t border-purple-50 my-1 pt-1">
+                        <Link
+                          to="/admin/login"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-pomify-purple hover:bg-purple-50"
+                        >
+                          <ShieldCheck className="w-4 h-4 text-pomify-purple" /> Admin Portal
+                        </Link>
+                      </div>
                     </div>
                   )}
                 </motion.div>
@@ -209,15 +315,20 @@ export const Navbar = () => {
                       Cart ({cartCount})
                     </Button>
                   </Link>
-                  <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="flex-1">
-                    <Button variant="glass" size="md" className="w-full" icon={LogIn}>
-                      Sign In
+                  <Link to={currentUser ? (isAdmin ? '/admin/orders' : '/orders') : '/login'} onClick={() => setMobileMenuOpen(false)} className="flex-1">
+                    <Button variant="glass" size="md" className="w-full" icon={currentUser ? User : LogIn}>
+                      {currentUser ? 'Account' : 'Sign In'}
                     </Button>
                   </Link>
                 </div>
                 <Link to="/customize" onClick={() => setMobileMenuOpen(false)}>
                   <Button variant="glass" size="md" className="w-full" icon={Palette}>
                     Customize Studio
+                  </Button>
+                </Link>
+                <Link to="/admin/orders" onClick={() => setMobileMenuOpen(false)}>
+                  <Button variant="outline" size="sm" className="w-full text-xs text-pomify-purple border-purple-200" icon={ShieldCheck}>
+                    Admin Order Management
                   </Button>
                 </Link>
               </div>

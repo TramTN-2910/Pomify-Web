@@ -15,6 +15,7 @@ export const createCustomerOrderApi = async (orderData) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(orderData),
+      signal: AbortSignal.timeout(4000),
     });
     const data = await res.json();
 
@@ -223,7 +224,7 @@ export const getAdminOrdersApi = async (status = 'All', search = '') => {
         customerEmail: 'an.nguyen@example.com',
         customerPhone: '0901234567',
         shippingAddress: '123 Nguyen Hue St, District 1, Ho Chi Minh City',
-        items: [{ productId: 'prod-1', name: 'Pomify Bot — Companion Edition', price: 3490000, quantity: 1, customization: { color: 'Lavender Violet', accessory: 'Cat Ears' } }],
+        items: [{ productId: 'prod-1', name: 'Pomify Robot — Pomify Neo', price: 3490000, quantity: 1, customization: { color: 'Xanh Pastel', colorCode: '#A5BEEB', texture: '/models/Robot/textures/Mauxanh.png', personality: 'Cute Companion' } }],
         totalAmount: 3490000,
         paymentMethod: 'VietQR',
         paymentStatus: 'Paid',

@@ -184,18 +184,37 @@ export const AdminOrdersPage = () => {
                       </td>
 
                       {/* Items Summary */}
-                      <td className="p-4 max-w-[220px]">
-                        {order.items?.map((item, idx) => (
-                          <div key={idx} className="truncate">
-                            <span className={`font-semibold ${textTitleClass}`}>{item.name}</span>
-                            <span className={`text-[10px] ml-1 ${textSubClass}`}>x{item.quantity}</span>
-                            {item.customization?.color && (
-                              <p className="text-[10px] text-purple-500">
-                                {item.customization.color} ({item.customization.accessory || 'No ears'})
-                              </p>
-                            )}
-                          </div>
-                        ))}
+                      <td className="p-4 max-w-[260px]">
+                        {order.items?.map((item, idx) => {
+                          const cust = item.customization || {};
+                          const colorCode = cust.colorCode || (
+                            cust.color?.toLowerCase().includes('hồng') || cust.color?.toLowerCase().includes('pink')
+                              ? '#F2A8B4'
+                              : cust.color?.toLowerCase().includes('tím') || cust.color?.toLowerCase().includes('purple')
+                              ? '#A491D3'
+                              : '#A5BEEB'
+                          );
+
+                          return (
+                            <div key={idx} className="mb-2 last:mb-0">
+                              <div className="flex items-center gap-1.5">
+                                <span className={`font-semibold text-xs ${textTitleClass}`}>{item.name}</span>
+                                <span className={`text-[10px] ${textSubClass}`}>x{item.quantity}</span>
+                              </div>
+                              {cust.color && (
+                                <div className="flex items-center gap-1.5 mt-0.5">
+                                  <span
+                                    className="w-2.5 h-2.5 rounded-full inline-block shrink-0 shadow-sm border border-slate-300 dark:border-slate-600"
+                                    style={{ backgroundColor: colorCode }}
+                                  />
+                                  <span className="text-[11px] font-bold text-pomify-purple dark:text-purple-400">
+                                    {cust.color}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
                       </td>
 
                       {/* Total Amount */}
@@ -339,17 +358,67 @@ export const AdminOrdersPage = () => {
                   {selectedOrder.notes && <p className="text-amber-500 italic mt-1">Note: {selectedOrder.notes}</p>}
                 </div>
 
-                <div className="space-y-2">
-                  <p className="font-bold">Purchased Items:</p>
-                  {selectedOrder.items?.map((it, i) => (
-                    <div key={i} className={`flex justify-between p-2.5 rounded-xl ${isDark ? 'bg-slate-800/40' : 'bg-slate-100'}`}>
-                      <div>
-                        <p className="font-semibold">{it.name}</p>
-                        <p className="text-slate-400 text-[11px]">Price: {formatVND(it.price)} x {it.quantity}</p>
+                <div className="space-y-2.5">
+                  <p className="font-bold">Purchased Items & Customization:</p>
+                  {selectedOrder.items?.map((it, i) => {
+                    const cust = it.customization || {};
+                    const colorCode = cust.colorCode || (
+                      cust.color?.toLowerCase().includes('hồng') || cust.color?.toLowerCase().includes('pink')
+                        ? '#F2A8B4'
+                        : cust.color?.toLowerCase().includes('tím') || cust.color?.toLowerCase().includes('purple')
+                        ? '#A491D3'
+                        : '#A5BEEB'
+                    );
+                    const textureThumb = cust.texture || (
+                      cust.color?.toLowerCase().includes('hồng') || cust.color?.toLowerCase().includes('pink')
+                        ? '/models/Robot/textures/Mauhong.png'
+                        : cust.color?.toLowerCase().includes('tím') || cust.color?.toLowerCase().includes('purple')
+                        ? '/models/Robot/textures/Mautim.png'
+                        : '/models/Robot/textures/Mauxanh.png'
+                    );
+
+                    return (
+                      <div key={i} className={`p-3 rounded-2xl border ${isDark ? 'bg-slate-800/50 border-slate-700/60' : 'bg-slate-50 border-slate-200'} space-y-2`}>
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <p className="font-bold text-sm">{it.name}</p>
+                            <p className="text-slate-400 text-xs">Price: {formatVND(it.price)} x {it.quantity}</p>
+                          </div>
+                          <p className="font-bold text-emerald-500">{formatVND(it.price * it.quantity)}</p>
+                        </div>
+
+                        {/* Texture Thumbnail & Customization Info */}
+                        {cust.color && (
+                          <div className={`p-2.5 rounded-xl border flex items-center gap-3 ${isDark ? 'bg-slate-900/60 border-slate-700' : 'bg-white border-purple-100 shadow-sm'}`}>
+                            <div className="relative shrink-0">
+                              <img
+                                src={textureThumb}
+                                alt={cust.color}
+                                className="w-12 h-12 rounded-xl object-cover border border-purple-200/80 shadow-sm"
+                                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                              />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <span
+                                  className="w-3 h-3 rounded-full inline-block shrink-0 shadow-sm border border-slate-300"
+                                  style={{ backgroundColor: colorCode }}
+                                />
+                                <span className="text-xs font-bold text-pomify-purple dark:text-purple-400">
+                                  Color: {cust.color}
+                                </span>
+                              </div>
+                              {cust.personality && (
+                                <p className="text-[10px] text-slate-500 dark:text-slate-300 mt-1">
+                                  Trí tuệ: <span className="font-semibold text-pomify-purple">{cust.personality}</span>
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        )}
                       </div>
-                      <p className="font-bold text-emerald-500">{formatVND(it.price * it.quantity)}</p>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 <div className="flex justify-between items-center border-t border-slate-700/50 pt-3 text-sm font-bold">

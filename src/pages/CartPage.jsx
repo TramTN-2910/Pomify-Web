@@ -74,7 +74,15 @@ export const CartPage = () => {
                     </div>
                     <div>
                       <h3 className="font-extrabold text-base text-pomify-navy">{item.name}</h3>
-                      <div className="text-xs text-pomify-purple font-semibold">{item.edition || 'Standard Edition'}</div>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        {item.customization?.colorCode && (
+                          <span
+                            className="w-2.5 h-2.5 rounded-full inline-block border border-slate-200 shrink-0"
+                            style={{ backgroundColor: item.customization.colorCode }}
+                          />
+                        )}
+                        <div className="text-xs text-pomify-purple font-semibold">{item.edition || item.customization?.color || 'Standard Edition'}</div>
+                      </div>
                       <div className="text-sm font-black text-pomify-navy mt-1">${item.price} USD</div>
                     </div>
                   </div>

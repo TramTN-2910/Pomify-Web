@@ -53,52 +53,58 @@ export const CheckoutPage = () => {
 
   const processOrder = async () => {
     setIsSubmitting(true);
-    const formattedItems = cartItems.map((item) => ({
-      productId: item.id || 'prod-1',
-      name: item.name || 'Pomify Bot — Companion Edition',
-      price: item.price ? item.price * 25000 : 3490000,
-      quantity: item.quantity || 1,
-      customization: {
-        color: item.color || item.customization?.color || 'Lavender Violet',
-        accessory: item.accessory || item.customization?.accessory || 'Cat Ears',
-        expression: item.expression || item.customization?.expression || 'Cute Happy',
-      },
-    }));
-
-    const orderPayload = {
-      customerName: formData.fullName,
-      customerEmail: formData.email,
-      customerPhone: formData.phone,
-      shippingAddress: `${formData.address}, ${formData.city}`,
-      totalAmount: total * 25000,
-      paymentMethod: paymentMethod === 'cod' ? 'COD' : paymentMethod === 'qr' ? 'VietQR' : 'Credit Card',
-      items: formattedItems,
-      notes: formData.notes || '',
-    };
-
-    let createdRes = null;
     try {
-      createdRes = await createCustomerOrderApi(orderPayload);
-    } catch (e) {
-      console.warn('API submission fallback');
+      const formattedItems = cartItems.map((item) => ({
+        productId: item.id || 'prod-1',
+        name: item.name || 'Pomify Bot — Companion Edition',
+        price: item.price ? item.price * 25000 : 3490000,
+        quantity: item.quantity || 1,
+        customization: {
+          color: item.customization?.color || item.color || 'Pastel Blue',
+          colorCode: item.customization?.colorCode || '#A5BEEB',
+          texture: item.customization?.texture || '/models/Robot/textures/Mauxanh.png',
+          accessory: item.customization?.accessory || 'Standard CAD Shell',
+          expression: item.customization?.expression || 'Standard Display',
+        },
+      }));
+
+      const orderPayload = {
+        customerName: formData.fullName,
+        customerEmail: formData.email,
+        customerPhone: formData.phone,
+        shippingAddress: `${formData.address}, ${formData.city}`,
+        totalAmount: total * 25000,
+        paymentMethod: paymentMethod === 'cod' ? 'COD' : paymentMethod === 'qr' ? 'VietQR' : 'Credit Card',
+        items: formattedItems,
+        notes: formData.notes || '',
+      };
+
+      let createdRes = null;
+      try {
+        createdRes = await createCustomerOrderApi(orderPayload);
+      } catch (e) {
+        console.warn('API submission fallback', e);
+      }
+
+      const assignedCode = createdRes?.data?.orderCode || `POM-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+
+      addOrder({
+        id: assignedCode,
+        orderCode: assignedCode,
+        total: total,
+        paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery (COD)' : paymentMethod === 'qr' ? 'VietQR Bank Transfer' : 'Credit Card',
+        shippingInfo: formData,
+        items: [...cartItems],
+      });
+
+      clearCart();
+    } catch (err) {
+      console.error('Error during order checkout:', err);
+    } finally {
+      setIsSubmitting(false);
+      setShowQRModal(false);
+      setOrderSuccess(true);
     }
-
-    const assignedCode = createdRes?.data?.orderCode || `POM-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-
-    addOrder({
-      id: assignedCode,
-      orderCode: assignedCode,
-      total: total,
-      paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery (COD)' : paymentMethod === 'qr' ? 'VietQR Bank Transfer' : 'Credit Card',
-      shippingInfo: formData,
-      items: [...cartItems],
-    });
-
-
-    clearCart();
-    setIsSubmitting(false);
-    setShowQRModal(false);
-    setOrderSuccess(true);
   };
 
   return (
@@ -428,10 +434,11 @@ export const CheckoutPage = () => {
               <Button
                 variant="primary"
                 size="md"
+                disabled={isSubmitting}
                 className="w-full shadow-cute-float text-xs py-2.5"
                 onClick={processOrder}
               >
-                I Have Completed Transfer
+                {isSubmitting ? 'Confirming Transfer...' : 'I Have Completed Transfer'}
               </Button>
             </div>
           </div>
